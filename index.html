@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aleco's Restaurant - Delicious Food & Drinks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0a0a0a;
+            --secondary: #1a1a1a;
+            --accent: #d4af37;
+            --accent-dark: #b8941f;
+            --text: #ffffff;
+            --text-light: #cccccc;
+            --shadow: rgba(0,0,0,0.5);
+            --red: #dc143c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            overflow-x: hidden;
+            background: var(--primary);
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            height: 80px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logo .by-m {
+            color: var(--accent);
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .logo .by-m:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--accent);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
+
+        .cart-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--red);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Mobile Cart Icon */
+        .mobile-cart-icon {
+            display: none;
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-right: 15px;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            z-index: 999;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-nav.active {
+            display: block;
+        }
+
+        .mobile-nav-item {
+            padding: 15px;
+            cursor: pointer;
+            color: var(--text-light);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .mobile-nav-item:hover {
+            color: var(--accent);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Pages Container */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(15, 20, 25, 0.7), rgba(30, 41, 51, 0.7)), 
+                        url('https://raw.githubusercontent.com/maykelkhouryyammine/alecos/main/background.webp') center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .hero-content h1 {
+            font-size: 6rem;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            animation: fadeInUp 1s ease;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-style: normal;
+        }
+
+        .hero-content p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1s ease 0.3s backwards;
+            font-style: normal;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: transparent;
+            color: var(--accent);
+            text-decoration: none;
+            border: 2px solid var(--accent);
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            animation: fadeInUp 1s ease 0.6s backwards;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            transform: translateX(-100%);
+            transition: transform 0.5s ease;
+            z-index: -1;
+        }
+
+        .cta-button:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .cta-button:hover::before {
+            transform: translateX(0);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Background for Other Pages */
+        .dark-bg {
+            background: linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.85)), 
+                        url('https://raw.githubusercontent.com/maykelkhouryyammine/alecos/main/background.webp') center/cover fixed;
+            position: relative;
+        }
+
+        /* About Section */
+        .about-page {
+            padding: 5rem 2rem;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .about-content {
+            max-width: 900px;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 4rem;
+            border-radius: 10px;
+            color: white;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .about-content h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .about-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .about-content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .contact-info {
+            margin-top: 2rem;
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .location-link {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 1rem 2.5rem;
+            background: transparent;
+            color: var(--accent);
+            text-decoration: none;
+            border: 2px solid var(--accent);
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+
+        .location-link:hover {
+            transform: translateY(-3px);
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .location-link .icon {
+            margin-right: 0.5rem;
+        }
+
+        /* Menu Selection Page */
+        .menu-selection {
+            padding: 5rem 1rem 2rem 1rem;
+            min-height: calc(100vh - 80px);
+            position: relative;
+            padding-bottom: 100px;
+        }
+
+        .menu-selection h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--accent);
+            position: relative;
+            z-index: 1;
+            padding-bottom: 20px;
+        }
+
+        .menu-selection h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        /* Horizontal Scrollable Categories */
+        .categories-scroll-container {
+            max-width: 1200px;
+            margin: 0 auto 3rem;
+            overflow-x: auto;
+            padding: 0 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent) transparent;
+            position: relative;
+            z-index: 1;
+        }
+
+        .categories-scroll-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .categories-scroll-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .categories-scroll-container::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .categories-scroll {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            min-width: min-content;
+        }
+
+        .category-btn {
+            background: rgba(26, 26, 26, 0.9);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .category-btn:hover {
+            transform: translateY(-3px);
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--accent);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+
+        .category-btn.active {
+            background: var(--accent);
+            color: var(--primary);
+            border-color: var(--accent);
+        }
+
+        .menu-items-display {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .menu-category {
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 2rem 1rem;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .category-header {
+            text-align: center;
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            letter-spacing: 8px;
+            font-weight: 300;
+            text-transform: uppercase;
+        }
+
+        .menu-items-list {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            background: rgba(26, 26, 26, 0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            background: rgba(212, 175, 55, 0.15);
+            box-shadow: 0 5px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .menu-item-image {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+
+        .item-content {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-description {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            font-style: italic;
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .item-price {
+            font-size: 1.3rem;
+            color: var(--accent);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .add-to-bag-btn {
+            background: var(--accent);
+            color: var(--primary);
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .add-to-bag-btn:hover {
+            background: var(--accent-dark);
+            transform: scale(1.05);
+        }
+
+        .add-to-bag-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            right: -100%;
+            top: 80px;
+            width: 100%;
+            max-width: 400px;
+            height: calc(100vh - 80px);
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            transition: right 0.3s ease;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .cart-sidebar.active {
+            right: 0;
+        }
+
+        .cart-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            line-height: 1;
+        }
+
+        .close-cart:hover {
+            color: var(--red);
+            transform: rotate(90deg);
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .cart-item {
+            background: rgba(26, 26, 26, 0.8);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-name {
+            font-weight: bold;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .remove-item {
+            background: var(--red);
+            border: none;
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .remove-item:hover {
+            background: #ff0000;
+        }
+
+        .cart-item-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .cart-item-price {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+        }
+
+        .empty-cart-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .cart-footer {
+            padding: 1.5rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .cart-total {
+            margin-bottom: 1rem;
+        }
+
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 1.1rem;
+        }
+
+        .total-line.main {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--accent);
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .total-line.lbp {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .whatsapp-order-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .whatsapp-order-btn:hover {
+            background: #20b858;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        /* Contact Section */
+        .contact-page {
+            padding: 5rem 2rem;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 4rem;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        .contact-container h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .contact-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--accent);
+        }
+
+        .contact-container > p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            background: rgba(26, 26, 26, 0.8);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .contact-item:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: translateX(5px);
+        }
+
+        .contact-item.whatsapp {
+            background: rgba(37, 211, 102, 0.2);
+            border-color: rgba(37, 211, 102, 0.3);
+        }
+
+        .contact-item.whatsapp:hover {
+            background: rgba(37, 211, 102, 0.3);
+        }
+
+        .contact-item .icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .contact-item.whatsapp .icon {
+            color: #25D366;
+        }
+
+        .contact-cta {
+            margin-top: 3rem;
+            padding: 1rem 3rem;
+            background: transparent;
+            color: var(--accent);
+            text-decoration: none;
+            border: 2px solid var(--accent);
+            font-weight: bold;
+            font-size: 1.1rem;
+            display: inline-block;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+
+        .contact-cta:hover {
+            transform: translateY(-3px);
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 10, 0.95);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        .footer-m {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .mobile-cart-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                width: 40px;
+                height: 40px;
+            }
+
+            .mobile-cart-count {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                background: var(--red);
+                color: white;
+                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.7rem;
+                font-weight: bold;
+            }
+
+            .hero-content h1 {
+                font-size: 3rem;
+            }
+
+            .hero-content p {
+                font-size: 1.2rem;
+            }
+
+            .about-content, .contact-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .about-content h2, .menu-selection h2, .contact-container h2 {
+                font-size: 2rem;
+            }
+
+            .about-content p {
+                font-size: 1rem;
+            }
+
+            .contact-info {
+                font-size: 0.95rem;
+            }
+
+            .contact-container > p {
+                font-size: 0.95rem;
+            }
+
+            .contact-item {
+                font-size: 0.95rem;
+                padding: 15px;
+                gap: 0.8rem;
+            }
+
+            .contact-item .icon {
+                font-size: 1.3rem;
+            }
+
+            .category-header {
+                font-size: 1.8rem;
+                letter-spacing: 4px;
+            }
+
+            .menu-items-list {
+                gap: 0.8rem;
+                padding: 1.5rem 0;
+            }
+
+            .menu-item-image {
+                height: 120px;
+            }
+
+            .item-name {
+                font-size: 1rem;
+            }
+
+            .item-description {
+                font-size: 0.8rem;
+            }
+
+            .item-price {
+                font-size: 1.1rem;
+            }
+
+            .add-to-bag-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .categories-scroll-container {
+                padding: 0 0.5rem;
+                margin-bottom: 2rem;
+            }
+            
+            .categories-scroll {
+                gap: 0.8rem;
+                padding: 0.8rem 0;
+            }
+            
+            .category-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .nav-container {
+                padding: 1rem;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .logo .by-m {
+                font-size: 0.8rem;
+            }
+
+            .cart-sidebar {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .cta-button {
+                padding: 0.8rem 2rem;
+                font-size: 1rem;
+            }
+
+            .menu-items-list {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.6rem;
+            }
+
+            .menu-item-image {
+                height: 100px;
+            }
+
+            .item-name {
+                font-size: 1.1rem;
+            }
+
+            .item-price {
+                font-size: 1.1rem;
+            }
+
+            .add-to-bag-btn {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+            
+            .category-btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.85rem;
+            }
+            
+            .categories-scroll {
+                gap: 0.6rem;
+            }
+
+            .category-header {
+                font-size: 1.5rem;
+                letter-spacing: 3px;
+            }
+
+            .about-content p {
+                font-size: 0.95rem;
+            }
+
+            .contact-info {
+                font-size: 0.9rem;
+            }
+
+            .contact-item {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo" onclick="showPage('home')">
+                <a href="https://www.instagram.com/maykel_yammine?igsh=ejIyNDYxdXhvNG84&utm_source=qr" target="_blank" class="by-m">By M</a>
+                <span class="logo-text">ALECO'S</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="mobile-cart-icon" onclick="toggleCart()">
+                    🛒
+                    <span class="mobile-cart-count" id="mobileCartCountIcon">0</span>
+                </div>
+                <div class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" onclick="showPage('home')">Home</a></li>
+                <li><a href="#" onclick="showPage('about')">About</a></li>
+                <li><a href="#" onclick="showPage('menu')">Menu</a></li>
+                <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+                <li>
+                    <div class="cart-icon" onclick="toggleCart()">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-item" onclick="showPage('home');">Home</div>
+        <div class="mobile-nav-item" onclick="showPage('about');">About</div>
+        <div class="mobile-nav-item" onclick="showPage('menu');">Menu</div>
+        <div class="mobile-nav-item" onclick="showPage('contact');">Contact</div>
+        <div class="mobile-nav-item" onclick="toggleCart();">🛒 My Bag (<span id="mobileCartCount">0</span>)</div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>🛒 My Bag</h3>
+            <button class="close-cart" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="empty-cart">
+                <div class="empty-cart-icon">🛒</div>
+                <p>Your bag is empty</p>
+                <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add items from the menu to get started!</p>
+            </div>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-total">
+                <div class="total-line main">
+                    <span>Total (USD):</span>
+                    <span id="totalUSD">$0.00</span>
+                </div>
+                <div class="total-line lbp">
+                    <span>Total (LBP):</span>
+                    <span id="totalLBP">0 LBP</span>
+                </div>
+            </div>
+            <button class="whatsapp-order-btn" onclick="sendWhatsAppOrder()">
+                📱 Order via WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Welcome to Aleco's</h1>
+                <p>Experience Exceptional Flavors & Warm Hospitality</p>
+                <button class="cta-button" onclick="showPage('menu')">View Our Menu</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- About Page -->
+    <div id="about" class="page dark-bg">
+        <section class="about-page">
+            <div class="about-content">
+                <h2>About Aleco's</h2>
+                <p>At Aleco's, we pride ourselves on serving fresh, delicious meals made with the finest ingredients. From crispy chicken tenders to gourmet burgers, fresh salads to refreshing beverages, we offer something for everyone.</p>
+                <p>Our commitment is to provide you with an unforgettable dining experience in a warm and welcoming atmosphere. Every dish is prepared with care and passion to ensure the highest quality.</p>
+                <div class="contact-info">
+                    📞 Call us: 06-661292
+                </div>
+                <a href="https://www.google.com/maps/search/alecos+resto+cafe+zgharta" target="_blank" class="location-link">
+                    <span class="icon">📍</span> View Our Location in Zgharta
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Menu Selection Page -->
+    <div id="menu" class="page dark-bg">
+        <section class="menu-selection">
+            <h2>Our Menu Categories</h2>
+            
+            <!-- Horizontal Scrollable Category Buttons -->
+            <div class="categories-scroll-container">
+                <div class="categories-scroll" id="categoriesScroll">
+                    <!-- Categories loaded dynamically from Firebase -->
+                </div>
+            </div>
+            
+            <!-- Menu Items Display -->
+            <div id="menu-items-display" class="menu-items-display">
+                <!-- Content loaded here via JavaScript -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Contact Page -->
+    <div id="contact" class="page dark-bg">
+        <section class="contact-page">
+            <div class="contact-container">
+                <h2>Get In Touch</h2>
+                <p>We'd love to hear from you! Contact us to place your order or for any inquiries.</p>
+                
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <span class="icon">📞</span>
+                        <span><strong>Phone:</strong> 06-661292</span>
+                    </div>
+                    <a href="https://wa.me/96106661292?text=Hello%20Aleco's!%20I'd%20like%20to%20place%20an%20order." target="_blank" class="contact-item whatsapp">
+                        <span class="icon">📱</span>
+                        <span><strong>WhatsApp:</strong> Order Now via WhatsApp</span>
+                    </a>
+                    <div class="contact-item">
+                        <span class="icon">🕒</span>
+                        <span><strong>Hours:</strong> Open Daily From 11:30 am to 11:30 pm</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="icon">🍽️</span>
+                        <span><strong>Services:</strong> Dine-in & Takeout</span>
+                    </div>
+                    <a href="https://www.instagram.com/alecoresto_cafe?igsh=dXoyZXNydW5xYXRu" target="_blank" class="contact-item">
+                        <span class="icon">📷</span>
+                        <span><strong>Instagram:</strong> @alecoresto_cafe</span>
+                    </a>
+                </div>
+
+                <a href="tel:06661292" class="contact-cta">Call Now</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>✨ Website by <span class="footer-m">M</span> ✨</p>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        // Initialize Firebase
+        initializeFirebase();
+
+        // Cart state
+        let cart = [];
+
+        // Menu category data with emojis
+        let menuCategories = {};
+        const categoryIcons = {
+            'salads': '🥗',
+            'platters': '🍽️',
+            'crispy': '🍗',
+            'sandwiches': '🥪',
+            'tenders': '🍖',
+            'drinks': '🥤',
+            'sauces': '🌶️',
+            'desserts': '🍰'
+        };
+
+        // Load menu from Firebase
+        async function loadMenu() {
+            try {
+                menuCategories = await getMenuData();
+                renderCategories();
+            } catch (error) {
+                console.error('Error loading menu:', error);
+            }
+        }
+
+        // Render category buttons
+        function renderCategories() {
+            const categoriesScroll = document.getElementById('categoriesScroll');
+            let html = '';
+            
+            for (const [id, data] of Object.entries(menuCategories)) {
+                const icon = categoryIcons[id] || '📋';
+                const name = id.charAt(0).toUpperCase() + id.slice(1);
+                html += `
+                    <button class="category-btn" onclick="showCategory('${id}')">
+                        ${icon} ${name}
+                    </button>
+                `;
+            }
+            
+            categoriesScroll.innerHTML = html;
+        }
+
+        // Show category items
+        function showCategory(category, autoLoad = false) {
+            // Update active button
+            if (!autoLoad) {
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            } else {
+                const firstBtn = document.querySelector('.category-btn');
+                if (firstBtn) firstBtn.classList.add('active');
+            }
+            
+            const categoryData = menuCategories[category];
+            if (!categoryData) return;
+            
+            // Generate HTML for the menu items
+            let itemsHTML = `
+                <div class="menu-category">
+                    <div class="category-header">${categoryData.title || category.toUpperCase()}</div>
+                    <div class="menu-items-list">
+            `;
+            
+            if (categoryData.items && categoryData.items.length > 0) {
+                categoryData.items.forEach(item => {
+                    itemsHTML += `
+                        <div class="menu-item">
+                            <img src="${item.image}" alt="${item.name}" class="menu-item-image">
+                            <div class="item-content">
+                                <div class="item-name">${item.name}</div>
+                                ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
+                                <div class="item-footer">
+                                    <div class="item-price">$${parseFloat(item.price).toFixed(2)}</div>
+                                    <button class="add-to-bag-btn" onclick="addToCart('${item.name.replace(/'/g, "\\'")}', ${item.price})">
+                                        Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            itemsHTML += `
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('menu-items-display').innerHTML = itemsHTML;
+            
+            // Scroll to the menu items smoothly only if not auto-loading
+            if (!autoLoad) {
+                document.getElementById('menu-items-display').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // Add item to cart
+        function addToCart(itemName, itemPrice) {
+            const item = {
+                name: itemName,
+                price: itemPrice,
+                id: Date.now() + Math.random()
+            };
+            cart.push(item);
+            updateCart();
+            
+            // Visual feedback
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✓ Added!';
+            btn.style.background = '#25D366';
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+            }, 1000);
+        }
+
+        // Remove item from cart
+        function removeFromCart(itemId, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            
+            cart = cart.filter(item => item.id !== itemId);
+            updateCart();
+            return false;
+        }
+
+        // Update cart display
+        function updateCart() {
+            const cartCount = document.getElementById('cartCount');
+            const mobileCartCount = document.getElementById('mobileCartCount');
+            const mobileCartCountIcon = document.getElementById('mobileCartCountIcon');
+            const cartItems = document.getElementById('cartItems');
+            const cartFooter = document.getElementById('cartFooter');
+            
+            const count = cart.length;
+            cartCount.textContent = count;
+            mobileCartCount.textContent = count;
+            mobileCartCountIcon.textContent = count;
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <p>Your bag is empty</p>
+                        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Add items from the menu to get started!</p>
+                    </div>
+                `;
+                cartFooter.style.display = 'none';
+            } else {
+                let itemsHTML = '';
+                cart.forEach(item => {
+                    itemsHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-header">
+                                <span class="cart-item-name">${item.name}</span>
+                                <button class="remove-item" onclick="removeFromCart(${item.id}, event)">Remove</button>
+                            </div>
+                            <div class="cart-item-details">
+                                <span class="cart-item-price">$${item.price.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                cartItems.innerHTML = itemsHTML;
+                cartFooter.style.display = 'block';
+                
+                const totalUSD = cart.reduce((sum, item) => sum + item.price, 0);
+                const totalLBP = totalUSD * 89500;
+                
+                document.getElementById('totalUSD').textContent = `$${totalUSD.toFixed(2)}`;
+                document.getElementById('totalLBP').textContent = `${totalLBP.toLocaleString()} LBP`;
+            }
+        }
+
+        // Toggle cart sidebar
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            cartSidebar.classList.toggle('active');
+            
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileNav) {
+                mobileNav.classList.remove('active');
+            }
+        }
+
+        // Send WhatsApp order
+        function sendWhatsAppOrder() {
+            if (cart.length === 0) {
+                alert('Your bag is empty! Add items to place an order.');
+                return;
+            }
+            
+            const totalUSD = cart.reduce((sum, item) => sum + item.price, 0);
+            const totalLBP = totalUSD * 89500;
+            
+            let message = '🍽️ *New Order from Aleco\'s Website*\n\n';
+            message += '*Items:*\n';
+            
+            let itemGroups = {};
+            cart.forEach(item => {
+                if (!itemGroups[item.name]) {
+                    itemGroups[item.name] = {
+                        count: 1,
+                        price: item.price
+                    };
+                } else {
+                    itemGroups[item.name].count++;
+                    itemGroups[item.name].price += item.price;
+                }
+            });
+            
+            Object.entries(itemGroups).forEach(([name, data], index) => {
+                message += `${index + 1}. ${name} ×${data.count} - $${data.price.toFixed(2)}\n`;
+            });
+            
+            message += `\n*Total:* $${totalUSD.toFixed(2)} (${totalLBP.toLocaleString()} LBP)`;
+            message += '\n\nThank you! 🙏';
+            
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappURL = `https://wa.me/9613979339?text=${encodedMessage}`;
+            
+            window.open(whatsappURL, '_blank');
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.getElementById(pageId).classList.add('active');
+            
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileNav) {
+                mobileNav.classList.remove('active');
+            }
+            
+            const cartSidebar = document.getElementById('cartSidebar');
+            if (cartSidebar) {
+                cartSidebar.classList.remove('active');
+            }
+            
+            window.scrollTo(0, 0);
+            
+            if (pageId === 'menu') {
+                setTimeout(() => {
+                    const firstCategory = Object.keys(menuCategories)[0];
+                    if (firstCategory) {
+                        showCategory(firstCategory, true);
+                    }
+                }, 100);
+            }
+        }
+
+        function toggleMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
+
+        // Add scroll effect to navigation
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.style.background = 'rgba(10, 10, 10, 0.98)';
+                nav.style.backdropFilter = 'blur(10px)';
+            } else {
+                nav.style.background = 'rgba(10, 10, 10, 0.95)';
+                nav.style.backdropFilter = 'blur(10px)';
+            }
+        });
+
+        // Initialize the website
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadMenu();
+            updateCart();
+            
+            document.addEventListener('click', (event) => {
+                const cartSidebar = document.getElementById('cartSidebar');
+                const cartIcon = document.querySelector('.cart-icon');
+                const mobileCartIcon = document.querySelector('.mobile-cart-icon');
+                
+                if (event.target.classList.contains('remove-item')) {
+                    return;
+                }
+                
+                if (cartSidebar.classList.contains('active') && 
+                    !cartSidebar.contains(event.target) && 
+                    !cartIcon.contains(event.target) &&
+                    !mobileCartIcon.contains(event.target)) {
+                    cartSidebar.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
