@@ -830,27 +830,27 @@
         }
 
         .whatsapp-order-btn {
-            width: 100%;
-            padding: 1rem;
-            background: #25D366;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
+    width: 100%;
+    padding: 1rem;
+    background: #000000; /* Changed to black */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
 
-        .whatsapp-order-btn:hover {
-            background: #20b858;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4);
-        }
+.whatsapp-order-btn:hover {
+    background: #333333; /* Dark gray on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4); /* Changed shadow color */
+}
 
         .empty-cart {
             text-align: center;
@@ -1783,10 +1783,17 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-       <p>Designed & Developed by <a href="https://www.instagram.com/maykel_yammine/" target="_blank">Maykel Yammine</a></p>
-    </footer>
+   <!-- Footer -->
+<footer>
+    <p style="color: white;">
+        Designed & Developed by 
+        <a href="https://www.instagram.com/maykel_yammine/" 
+           target="_blank" 
+           style="color: white; text-decoration: underline; font-weight: bold;">
+           Maykel Yammine
+        </a>
+    </p>
+</footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
