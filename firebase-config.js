@@ -4,20 +4,25 @@ const firebaseConfig = {
     authDomain: "alecos-restaurant.firebaseapp.com",
     databaseURL: "https://alecos-restaurant-default-rtdb.europe-west1.firebasedatabase.app",
     projectId: "alecos-restaurant",
-    storageBucket: "alecos-restaurant.firebasestorage.app", // Keep this even if not using
+    storageBucket: "alecos-restaurant.firebasestorage.app",
     messagingSenderId: "975810557780",
     appId: "1:975810557780:web:89c8430d7b4c7cd1e4bac1"
 };
 
-// Initialize Firebase
+// Initialize Firebase (for Firebase 8.10.0 CDN)
 let app, auth, database, storage;
 
 function initializeFirebase() {
     try {
-        app = firebase.initializeApp(firebaseConfig);
+        // Check if Firebase is already initialized
+        if (!firebase.apps || firebase.apps.length === 0) {
+            app = firebase.initializeApp(firebaseConfig);
+        } else {
+            app = firebase.app();
+        }
         auth = firebase.auth();
         database = firebase.database();
-        storage = firebase.storage(); // Initialize but might not use
+        storage = firebase.storage();
         console.log('✅ Firebase initialized successfully');
         return true;
     } catch (error) {
@@ -25,6 +30,8 @@ function initializeFirebase() {
         return false;
     }
 }
+
+// Helper functions remain the same...
 
 // Helper function to check if user is logged in
 function checkAuth(redirectToLogin = true) {
