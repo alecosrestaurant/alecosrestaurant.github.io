@@ -80,6 +80,32 @@
             opacity: 0.8;
             transform: scale(1.05);
         }
+        /* ======= ADD LOGO IMAGE STYLES HERE ======= */
+        .logo-image {
+            height: 50px;
+            width: auto;
+            transition: all 0.3s ease;
+        }
+
+        /* If logo needs to be more red */
+        .logo-image.red-logo {
+            filter: hue-rotate(-100deg) saturate(2) brightness(0.9);
+        }
+
+        /* Adjust logo container spacing */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Reduced from 15px */
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* Hide the old text logo */
+        .logo-text {
+            display: none;
+        }
+        /* ======= END LOGO STYLES ======= */
 
         .nav-links {
             display: flex;
@@ -264,6 +290,24 @@
             color: var(--accent);
             letter-spacing: 2px;
         }
+        /* Hero Logo Styling */
+.hero-logo {
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 1s ease;
+}
+
+.hero-logo img {
+    height: 150px;
+    width: auto;
+    filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.7));
+    /* Optional: Make logo brighter/more vibrant */
+    filter: brightness(1.1) contrast(1.1) drop-shadow(3px 3px 6px rgba(0,0,0,0.7));
+}
+
+/* If logo needs to be more red */
+.hero-logo .red-logo {
+    filter: hue-rotate(-100deg) saturate(2) brightness(0.9) drop-shadow(3px 3px 6px rgba(0,0,0,0.7));
+}
 
         .cta-button {
             display: inline-block;
@@ -1281,6 +1325,15 @@
     .about-content p, .contact-container > p {
         font-size: 1rem;
     }
+     /* ===== ADD LOGO MOBILE STYLES HERE ===== */
+    .logo-image {
+        height: 40px; /* Smaller logo on mobile */
+    }
+    
+    .logo {
+        gap: 8px; /* Tighter spacing on mobile */
+    }
+    /* ===== END LOGO MOBILE STYLES ===== */
 
     /* 2 columns on mobile */
     .menu-items {
@@ -1333,6 +1386,9 @@
         flex-direction: column;
         gap: 1rem;
     }
+    .hero-logo img {
+        height: 100px; /* Smaller on tablets */
+    }
 }
 
 /* For tablets and iPads */
@@ -1374,6 +1430,15 @@
         padding: 0.8rem 2rem;
         font-size: 1rem;
     }
+    /* ===== ADD EXTRA SMALL LOGO STYLES HERE ===== */
+    .logo-image {
+        height: 35px; /* Even smaller on very small phones */
+    }
+    
+    .logo .by-m {
+        font-size: 0.9rem; /* Make "by M" smaller too */
+    }
+    /* ===== END EXTRA SMALL LOGO STYLES ===== */
 
     /* Keep 2 columns even on very small screens */
     .menu-items {
@@ -1425,6 +1490,9 @@
         padding: 0.4rem 0.8rem;
         font-size: 0.8rem;
     }
+    .hero-logo img {
+        height: 80px; /* Even smaller on phones */
+    }
 }
     </style>
 </head>
@@ -1432,11 +1500,14 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <div class="logo" onclick="showPage('home')">
-                <div class="logo-text">ALECO'S</div>
-                <a href="https://maykelkhouryyammine.site" target="_blank" class="by-m">by M</a>
-            </div>
-            
+    <div class="logo" onclick="showPage('home')">
+        <img src="https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/alecoslogo-removebg-preview.webp" 
+             alt="Aleco's café resto" 
+             class="logo-image"
+             style="height: 45px; width: auto;">
+        <a href="https://www.instagram.com/maykel_yammine/" target="_blank" class="by-m">by M</a>
+    </div>
+
             <ul class="nav-links">
                 <li><a href="#" onclick="showPage('home'); return false;">Home</a></li>
                 <li><a href="#" onclick="showPage('about'); return false;">About</a></li>
@@ -1489,10 +1560,15 @@
     <div id="home" class="page active">
         <section class="hero">
             <div class="hero-content">
-                <h1>ALECO'S</h1>
-                <p class="hero-subtitle">Delicious Food & Drinks</p>
-                <button class="cta-button" onclick="showPage('menu')">View Menu</button>
-            </div>
+    <!-- Logo in place of ALECO'S text -->
+    <div class="hero-logo">
+        <img src="https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/alecoslogo-removebg-preview.webp" 
+             alt="Aleco's café resto" 
+             style="height: 150px; width: auto; margin-bottom: 20px;">
+    </div>
+    <p class="hero-subtitle">Delicious Food & Drinks</p>
+    <button class="cta-button" onclick="showPage('menu')">View Menu</button>
+</div>
         </section>
     </div>
 
@@ -1709,7 +1785,7 @@
 
     <!-- Footer -->
     <footer>
-        <p>✨ Website by <span class="footer-m">M</span> ✨</p>
+       <p>Designed & Developed by <a href="https://www.instagram.com/maykel_yammine/" target="_blank">Maykel Yammine</a></p>
     </footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
