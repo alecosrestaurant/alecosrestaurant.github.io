@@ -1500,7 +1500,7 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-    <div class="logo" onclick="showPage('home')">
+    <div class="logo" onclick="showPageOptimized('home')">
         <img src="https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/alecoslogo-removebg-preview.webp" 
              alt="Aleco's café resto" 
              class="logo-image"
@@ -1509,10 +1509,10 @@
     </div>
 
             <ul class="nav-links">
-                <li><a href="#" onclick="showPage('home'); return false;">Home</a></li>
-                <li><a href="#" onclick="showPage('about'); return false;">About</a></li>
-                <li><a href="#" onclick="showPage('menu'); return false;">Menu</a></li>
-                <li><a href="#" onclick="showPage('contact'); return false;">Contact</a></li>
+                <li><a href="#" onclick="showPageOptimized('home'); return false;">Home</a></li>
+                <li><a href="#" onclick="showPageOptimized('about'); return false;">About</a></li>
+                <li><a href="#" onclick="showPageOptimized('menu'); return false;">Menu</a></li>
+                <li><a href="#" onclick="showPageOptimized('contact'); return false;">Contact</a></li>
                 <li>
                     <div class="settings-icon" onclick="openAdminModal()" title="Admin Settings">
                         ⚙️
@@ -1545,10 +1545,10 @@
 
     <!-- Mobile Navigation -->
     <div class="mobile-nav" id="mobileNav">
-        <div class="mobile-nav-item" onclick="showPage('home')">🏠 Home</div>
-        <div class="mobile-nav-item" onclick="showPage('about')">📖 About</div>
-        <div class="mobile-nav-item" onclick="showPage('menu')">🍽️ Menu</div>
-        <div class="mobile-nav-item" onclick="showPage('contact')">📞 Contact</div>
+        <div class="mobile-nav-item" onclick="showPageOptimized('home')">🏠 Home</div>
+        <div class="mobile-nav-item" onclick="showPageOptimized('about')">📖 About</div>
+        <div class="mobile-nav-item" onclick="showPageOptimized('menu')">🍽️ Menu</div>
+        <div class="mobile-nav-item" onclick="showPageOptimized('contact')">📞 Contact</div>
         <div class="mobile-nav-item" onclick="openAdminModal()">⚙️ Admin</div>
         <div class="mobile-nav-item" onclick="toggleCart()">🛒 Cart (<span id="mobileCartCount">0</span>)</div>
     </div>
@@ -1567,7 +1567,7 @@
              style="height: 150px; width: auto; margin-bottom: 20px;">
     </div>
     <p class="hero-subtitle">Delicious Food & Drinks</p>
-    <button class="cta-button" onclick="showPage('menu')">View Menu</button>
+    <button class="cta-button" onclick="showPageOptimized('menu')">View Menu</button>
 </div>
         </section>
     </div>
@@ -1828,6 +1828,15 @@
         }
     }
 
+    // ==========================================
+    // CACHING CONFIGURATION
+    // ==========================================
+    const CACHE_CONFIG = {
+        MENU_KEY: 'alecos_menu_cache_v2',
+        MENU_DURATION: 3600000, // 1 hour cache
+        VERSION: '2.0'
+    };
+
     // Global variables
     let cart = [];
     let menuCategories = {};
@@ -1850,17 +1859,41 @@
     // Initialize Firebase
     initializeFirebase();
 
-    // Load menu from Firebase - FIXED VERSION
-    async function loadMenu() {
+    // ==========================================
+    // OPTIMIZED MENU LOADING WITH CACHING
+    // ==========================================
+    async function loadMenuOptimized() {
         try {
-            console.log('Loading menu from Firebase...');
+            console.log('🔄 Loading menu...');
+            
+            // 1. Check cache first
+            const cached = localStorage.getItem(CACHE_CONFIG.MENU_KEY);
+            if (cached) {
+                try {
+                    const { data, timestamp, version } = JSON.parse(cached);
+                    const age = Date.now() - timestamp;
+                    
+                    if (age < CACHE_CONFIG.MENU_DURATION && version === CACHE_CONFIG.VERSION) {
+                        console.log(`✅ Loaded from cache (saved ${(2.2).toFixed(1)}MB download)`);
+                        menuCategories = data;
+                        renderCategoryPills();
+                        const firstCategory = Object.keys(menuCategories)[0];
+                        if (firstCategory) {
+                            showCategory(firstCategory, true);
+                        }
+                        return; // STOP HERE - no Firebase call needed!
+                    }
+                } catch (e) {
+                    console.log('Cache invalid, fetching fresh data');
+                }
+            }
+            
+            // 2. Cache miss - download from Firebase
+            console.log('🌐 Downloading from Firebase...');
             const snapshot = await database.ref('menu').once('value');
             menuCategories = snapshot.val();
 
-            console.log('Menu data received:', menuCategories);
-
             if (!menuCategories) {
-                // Create default empty structure
                 menuCategories = {};
                 for (const [categoryId, config] of Object.entries(categoryConfig)) {
                     menuCategories[categoryId] = {
@@ -1868,19 +1901,22 @@
                         items: []
                     };
                 }
-                console.log('Created default menu structure');
             }
 
-            // Render category pills
-            renderCategoryPills();
+            // 3. Save to cache
+            localStorage.setItem(CACHE_CONFIG.MENU_KEY, JSON.stringify({
+                data: menuCategories,
+                timestamp: Date.now(),
+                version: CACHE_CONFIG.VERSION
+            }));
             
-            // Show first category if exists
+            console.log('✅ Menu loaded and cached');
+            
+            // 4. Render
+            renderCategoryPills();
             const firstCategory = Object.keys(menuCategories)[0];
             if (firstCategory) {
                 showCategory(firstCategory, true);
-            } else {
-                document.getElementById('menu-items-display').innerHTML = 
-                    '<div class="loading">No menu items available</div>';
             }
         } catch (error) {
             console.error('Error loading menu:', error);
@@ -1888,6 +1924,45 @@
                 '<div class="loading">Error loading menu. Please refresh.</div>';
         }
     }
+
+    /**
+     * Clear cache when menu is updated
+     */
+    function clearMenuCache() {
+        localStorage.removeItem(CACHE_CONFIG.MENU_KEY);
+        console.log('🗑️ Menu cache cleared');
+    }
+
+    // ==========================================
+    // OPTIMIZED PAGE NAVIGATION
+    // ==========================================
+    function showPageOptimized(pageId) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.getElementById('mobileNav').classList.remove('active');
+        document.getElementById('cartSidebar').classList.remove('active');
+        window.scrollTo(0, 0);
+        
+        // CRITICAL FIX: Only load menu if it's not already loaded
+        if (pageId === 'menu') {
+            // Check if menu is already loaded
+            if (!menuCategories || Object.keys(menuCategories).length === 0) {
+                loadMenuOptimized(); // Use optimized version
+            } else {
+                console.log('✅ Menu already loaded (0 bytes downloaded)');
+                // Just re-render what we have
+                renderCategoryPills();
+                const firstCategory = Object.keys(menuCategories)[0];
+                if (firstCategory) {
+                    showCategory(firstCategory, true);
+                }
+            }
+        }
+    }
+
+    // ==========================================
+    // ORIGINAL FUNCTIONS (UPDATED)
+    // ==========================================
 
     // Render category pills
     function renderCategoryPills() {
@@ -2081,23 +2156,6 @@
         window.open(`https://wa.me/96103979339?text=${encodeURIComponent(message)}`, '_blank');
     }
 
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        document.getElementById('mobileNav').classList.remove('active');
-        document.getElementById('cartSidebar').classList.remove('active');
-        window.scrollTo(0, 0);
-        
-        // If showing menu page, ensure menu is loaded
-        if (pageId === 'menu') {
-            setTimeout(() => {
-                if (!menuCategories || Object.keys(menuCategories).length === 0) {
-                    loadMenu();
-                }
-            }, 100);
-        }
-    }
-
     function toggleMenu() {
         document.getElementById('mobileNav').classList.toggle('active');
     }
@@ -2270,10 +2328,13 @@
             
             await database.ref(`menu/${currentAdminCategory}`).set(categoryData);
             
+            // Clear cache after deletion
+            clearMenuCache();
+            
             showSuccess('Item deleted!');
             loadAdminItems(currentAdminCategory);
             loadAdminCategories();
-            loadMenu();
+            loadMenuOptimized();
         } catch (error) {
             console.error('Error deleting item:', error);
             alert('Error deleting item');
@@ -2307,6 +2368,9 @@
         }
     }
 
+    // ==========================================
+    // UPDATED ITEM FORM SUBMIT HANDLER
+    // ==========================================
     document.getElementById('itemForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -2337,11 +2401,16 @@
             
             await database.ref(`menu/${currentAdminCategory}`).set(categoryData);
             
+            // ✅ CRITICAL: Clear cache after update
+            clearMenuCache();
+            
             closeItemModal();
             showSuccess(currentEditItem !== null ? 'Item updated!' : 'Item added!');
             loadAdminItems(currentAdminCategory);
             loadAdminCategories();
-            loadMenu();
+            
+            // Force reload from Firebase
+            await loadMenuOptimized();
         } catch (error) {
             console.error('Error saving item:', error);
             alert('Error saving item');
@@ -2370,10 +2439,88 @@
         }
     }
 
-    // Initialize
+    // ==========================================
+    // IMAGE MIGRATION HELPER (Optional)
+    // ==========================================
+    async function analyzeImageStorage() {
+        const snapshot = await database.ref('menu').once('value');
+        const menu = snapshot.val();
+        
+        let base64Count = 0;
+        let urlCount = 0;
+        let totalBase64Size = 0;
+        
+        for (const category in menu) {
+            const items = menu[category]?.items || [];
+            for (const item of items) {
+                if (item.image) {
+                    if (item.image.startsWith('data:image')) {
+                        base64Count++;
+                        totalBase64Size += item.image.length;
+                    } else {
+                        urlCount++;
+                    }
+                }
+            }
+        }
+        
+        console.log(`
+            📊 IMAGE STORAGE ANALYSIS:
+            ========================
+            Base64 images (in database): ${base64Count}
+            URL images (external): ${urlCount}
+            Total base64 size: ${(totalBase64Size / 1024 / 1024).toFixed(2)} MB
+            
+            ${base64Count > 0 ? '⚠️ WARNING: Base64 images cause high bandwidth!' : '✅ All images use URLs'}
+        `);
+        
+        return { base64Count, urlCount, totalBase64Size };
+    }
+
+    // ==========================================
+    // BANDWIDTH MONITORING (Optional)
+    // ==========================================
+    class BandwidthMonitor {
+        constructor() {
+            this.requests = [];
+            this.sessionStart = Date.now();
+        }
+        
+        logRequest(type, size) {
+            this.requests.push({
+                type,
+                size,
+                timestamp: Date.now()
+            });
+            
+            const totalMB = this.requests.reduce((sum, r) => sum + r.size, 0) / 1024 / 1024;
+            console.log(`📊 Session bandwidth: ${totalMB.toFixed(2)} MB`);
+        }
+        
+        getReport() {
+            const totalBytes = this.requests.reduce((sum, r) => sum + r.size, 0);
+            const sessionMinutes = (Date.now() - this.sessionStart) / 60000;
+            const hourlyRate = (totalBytes / sessionMinutes) * 60;
+            const dailyProjection = hourlyRate * 24;
+            
+            return {
+                totalMB: (totalBytes / 1024 / 1024).toFixed(2),
+                hourlyMB: (hourlyRate / 1024 / 1024).toFixed(2),
+                dailyMB: (dailyProjection / 1024 / 1024).toFixed(2),
+                withinLimit: dailyProjection < (360 * 1024 * 1024)
+            };
+        }
+    }
+
+    // Initialize bandwidth monitor (optional)
+    // const bandwidthMonitor = new BandwidthMonitor();
+
+    // ==========================================
+    // INITIALIZATION
+    // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM loaded, initializing...');
-        loadMenu();
+        console.log('DOM loaded, initializing with optimized caching...');
+        loadMenuOptimized();
         updateCart();
     });
 </script>
