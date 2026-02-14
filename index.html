@@ -31,7 +31,6 @@
             background: var(--primary);
         }
 
-        /* Navigation */
         nav {
             background: rgba(10, 10, 10, 0.95);
             backdrop-filter: blur(10px);
@@ -56,16 +55,15 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             cursor: pointer;
             text-decoration: none;
         }
 
-        .logo-text {
-            font-size: 2rem;
-            font-weight: bold;
-            color: white;
-            letter-spacing: 2px;
+        .logo-image {
+            height: 45px;
+            width: auto;
+            transition: all 0.3s ease;
         }
 
         .logo .by-m {
@@ -80,32 +78,6 @@
             opacity: 0.8;
             transform: scale(1.05);
         }
-        /* ======= ADD LOGO IMAGE STYLES HERE ======= */
-        .logo-image {
-            height: 50px;
-            width: auto;
-            transition: all 0.3s ease;
-        }
-
-        /* If logo needs to be more red */
-        .logo-image.red-logo {
-            filter: hue-rotate(-100deg) saturate(2) brightness(0.9);
-        }
-
-        /* Adjust logo container spacing */
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px; /* Reduced from 15px */
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        /* Hide the old text logo */
-        .logo-text {
-            display: none;
-        }
-        /* ======= END LOGO STYLES ======= */
 
         .nav-links {
             display: flex;
@@ -142,7 +114,6 @@
             width: 100%;
         }
 
-        /* Settings Icon */
         .settings-icon {
             position: relative;
             cursor: pointer;
@@ -160,7 +131,6 @@
             transform: rotate(90deg);
         }
 
-        /* Cart Icon */
         .cart-icon {
             position: relative;
             cursor: pointer;
@@ -194,7 +164,6 @@
             font-weight: bold;
         }
 
-        /* Mobile Navigation */
         .mobile-cart-icon {
             display: none;
             position: relative;
@@ -250,7 +219,6 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
-        /* Pages */
         .page {
             display: none;
             min-height: 100vh;
@@ -261,7 +229,6 @@
             display: block;
         }
 
-        /* Hero Section */
         .hero {
             background: linear-gradient(rgba(15, 20, 25, 0.7), rgba(30, 41, 51, 0.7)), 
                         url('https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/background55.webp') center/cover;
@@ -274,13 +241,15 @@
             position: relative;
         }
 
-        .hero-content h1 {
-            font-size: 6rem;
-            margin-bottom: 1rem;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+        .hero-logo {
+            margin-bottom: 1.5rem;
             animation: fadeInUp 1s ease;
-            color: white;
-            letter-spacing: 8px;
+        }
+
+        .hero-logo img {
+            height: 150px;
+            width: auto;
+            filter: brightness(1.1) contrast(1.1) drop-shadow(3px 3px 6px rgba(0,0,0,0.7));
         }
 
         .hero-subtitle {
@@ -290,24 +259,6 @@
             color: var(--accent);
             letter-spacing: 2px;
         }
-        /* Hero Logo Styling */
-.hero-logo {
-    margin-bottom: 1.5rem;
-    animation: fadeInUp 1s ease;
-}
-
-.hero-logo img {
-    height: 150px;
-    width: auto;
-    filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.7));
-    /* Optional: Make logo brighter/more vibrant */
-    filter: brightness(1.1) contrast(1.1) drop-shadow(3px 3px 6px rgba(0,0,0,0.7));
-}
-
-/* If logo needs to be more red */
-.hero-logo .red-logo {
-    filter: hue-rotate(-100deg) saturate(2) brightness(0.9) drop-shadow(3px 3px 6px rgba(0,0,0,0.7));
-}
 
         .cta-button {
             display: inline-block;
@@ -342,7 +293,6 @@
             }
         }
 
-        /* About Page */
         .about-page {
             background: linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.85)), 
                         url('https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/background55.webp') center/cover fixed;
@@ -426,7 +376,6 @@
             margin-right: 0.5rem;
         }
 
-        /* Menu Page */
         .menu-page {
             background: linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.85)), 
                         url('https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/background55.webp') center/cover fixed;
@@ -454,7 +403,6 @@
             margin-bottom: 3rem;
         }
 
-        /* Category Pills */
         .category-pills {
             display: flex;
             flex-wrap: wrap;
@@ -487,7 +435,6 @@
             border-color: var(--accent);
         }
 
-        /* Menu Items */
         .menu-items-container {
             min-height: 400px;
         }
@@ -588,7 +535,6 @@
             transform: scale(1.05);
         }
 
-        /* Contact Page */
         .contact-page {
             background: linear-gradient(rgba(10, 10, 10, 0.85), rgba(10, 10, 10, 0.85)), 
                         url('https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/background55.webp') center/cover fixed;
@@ -705,7 +651,6 @@
             box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
         }
 
-        /* Cart Sidebar */
         .cart-sidebar {
             position: fixed;
             right: -450px;
@@ -830,27 +775,27 @@
         }
 
         .whatsapp-order-btn {
-    width: 100%;
-    padding: 1rem;
-    background: #000000; /* Changed to black */
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-}
+            width: 100%;
+            padding: 1rem;
+            background: #000000;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
 
-.whatsapp-order-btn:hover {
-    background: #333333; /* Dark gray on hover */
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4); /* Changed shadow color */
-}
+        .whatsapp-order-btn:hover {
+            background: #333333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+        }
 
         .empty-cart {
             text-align: center;
@@ -863,7 +808,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Admin Modal */
         .admin-modal {
             display: none;
             position: fixed;
@@ -881,7 +825,6 @@
             display: block;
         }
 
-        /* Login Screen */
         .login-container {
             background: rgba(26, 26, 26, 0.95);
             backdrop-filter: blur(10px);
@@ -982,7 +925,6 @@
             color: white;
         }
 
-        /* Admin Dashboard */
         .admin-dashboard {
             display: none;
             padding: 2rem;
@@ -1131,7 +1073,6 @@
             width: auto;
         }
 
-        /* Item Modal */
         .item-modal {
             display: none;
             position: fixed;
@@ -1139,34 +1080,35 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 4000;
-            overflow-y: auto;
-            padding: 2rem;
+            overflow: hidden;
         }
 
         .item-modal.show {
             display: flex;
-            align-items: center;
+            align-items: stretch;
             justify-content: center;
         }
 
         .modal-content {
             background: rgba(26, 26, 26, 0.98);
             border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 15px;
-            padding: 2rem;
-            max-width: 600px;
             width: 100%;
+            max-width: 600px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
+            padding: 1.5rem 2rem;
             border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+            flex-shrink: 0;
         }
 
         .modal-title {
@@ -1180,6 +1122,24 @@
             color: white;
             font-size: 2rem;
             cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--accent);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 2px solid rgba(212, 175, 55, 0.3);
+            background: rgba(10, 10, 10, 0.9);
+            flex-shrink: 0;
         }
 
         .form-input {
@@ -1197,34 +1157,6 @@
             resize: vertical;
         }
 
-        .upload-btn-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .upload-btn {
-            width: 100%;
-            padding: 0.8rem;
-            background: rgba(212, 175, 55, 0.2);
-            border: 2px dashed var(--accent);
-            border-radius: 6px;
-            color: var(--accent);
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .upload-btn-wrapper input[type=file] {
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-            width: 100%;
-            height: 100%;
-        }
-
         .image-preview {
             margin-top: 1rem;
             text-align: center;
@@ -1239,7 +1171,6 @@
         .modal-actions {
             display: flex;
             gap: 1rem;
-            margin-top: 2rem;
         }
 
         .btn-submit {
@@ -1284,7 +1215,6 @@
             transform: translateY(0);
         }
 
-        /* Footer */
         footer {
             background: rgba(10, 10, 10, 0.95);
             color: white;
@@ -1298,226 +1228,96 @@
             opacity: 0.8;
         }
 
-        .footer-m {
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 1.1rem;
+        @media (max-width: 768px) {
+            .hero-logo img {
+                height: 100px;
+            }
+
+            .logo-image {
+                height: 40px;
+            }
+
+            .menu-items {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+            }
+
+            .item-content {
+                padding: 0.8rem;
+            }
+
+            .item-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .item-footer .add-to-bag-btn {
+                width: 100%;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .mobile-cart-icon {
+                display: block;
+            }
+
+            .cart-sidebar {
+                width: 100%;
+                right: -100%;
+            }
+
+            .modal-content {
+                max-width: 100%;
+                border-radius: 0;
+            }
         }
 
-        /* Responsive */
-@media (max-width: 768px) {
-    .hero-content h1 {
-        font-size: 3rem;
-    }
+        @media (max-width: 480px) {
+            .hero-logo img {
+                height: 80px;
+            }
 
-    .page-title {
-        font-size: 2.5rem;
-    }
+            .logo-image {
+                height: 35px;
+            }
 
-    .about-content h2, .contact-container h2 {
-        font-size: 2rem;
-    }
+            .menu-item-image {
+                height: 130px;
+            }
 
-    .about-content, .contact-container {
-        padding: 2rem 1.5rem;
-    }
+            .item-name {
+                font-size: 1rem;
+            }
 
-    .about-content p, .contact-container > p {
-        font-size: 1rem;
-    }
-     /* ===== ADD LOGO MOBILE STYLES HERE ===== */
-    .logo-image {
-        height: 40px; /* Smaller logo on mobile */
-    }
-    
-    .logo {
-        gap: 8px; /* Tighter spacing on mobile */
-    }
-    /* ===== END LOGO MOBILE STYLES ===== */
-
-    /* 2 columns on mobile */
-    .menu-items {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.8rem;
-        padding: 0.5rem;
-    }
-    
-    /* Better mobile item layout */
-    .item-content {
-        padding: 0.8rem;
-    }
-    
-    .item-footer {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-    
-    .item-footer .add-to-bag-btn {
-        width: 100%;
-    }
-    
-    .items-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .nav-links {
-        display: none;
-    }
-
-    .menu-toggle {
-        display: flex;
-    }
-
-    .mobile-cart-icon {
-        display: block;
-    }
-
-    .cart-sidebar {
-        width: 100%;
-        right: -100%;
-    }
-
-    .categories-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-header {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    .hero-logo img {
-        height: 100px; /* Smaller on tablets */
-    }
-}
-
-/* For tablets and iPads */
-@media (min-width: 769px) and (max-width: 1024px) {
-    .menu-items {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-    }
-    
-    .menu-item-image {
-        height: 200px;
-    }
-    
-    .item-content {
-        padding: 1.2rem;
-    }
-    
-    /* Keep horizontal layout on tablets */
-    .item-footer {
-        flex-direction: row; /* Price and button side by side */
-        justify-content: space-between;
-    }
-    
-    .item-footer .add-to-bag-btn {
-        width: auto; /* Button not full width on tablets */
-    }
-}
-
-@media (max-width: 480px) {
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1.2rem;
-    }
-
-    .cta-button, .location-link, .contact-cta {
-        padding: 0.8rem 2rem;
-        font-size: 1rem;
-    }
-    /* ===== ADD EXTRA SMALL LOGO STYLES HERE ===== */
-    .logo-image {
-        height: 35px; /* Even smaller on very small phones */
-    }
-    
-    .logo .by-m {
-        font-size: 0.9rem; /* Make "by M" smaller too */
-    }
-    /* ===== END EXTRA SMALL LOGO STYLES ===== */
-
-    /* Keep 2 columns even on very small screens */
-    .menu-items {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.6rem; /* Even smaller gap for tiny screens */
-    }
-
-    .page-title {
-        font-size: 2rem;
-    }
-
-    .category-pill {
-        padding: 0.7rem 1.5rem;
-        font-size: 0.9rem;
-    }
-
-    .category-title {
-        font-size: 1.8rem;
-    }
-    
-    /* Adjust menu item styling for smaller screens */
-    .menu-item {
-        margin-bottom: 0;
-    }
-    
-    .menu-item-image {
-        height: 130px; /* Even smaller images on very small phones */
-    }
-    
-    .item-content {
-        padding: 0.7rem;
-    }
-    
-    .item-name {
-        font-size: 1rem;
-    }
-    
-    .item-description {
-        font-size: 0.8rem;
-        line-height: 1.3;
-        margin-bottom: 0.5rem;
-    }
-    
-    .item-price {
-        font-size: 1rem;
-    }
-    
-    .add-to-bag-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-    }
-    .hero-logo img {
-        height: 80px; /* Even smaller on phones */
-    }
-}
+            .add-to-bag-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav>
         <div class="nav-container">
-    <div class="logo" onclick="showPageOptimized('home')">
-        <img src="https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/alecoslogo-removebg-preview.webp" 
-             alt="Aleco's café resto" 
-             class="logo-image"
-             style="height: 45px; width: auto;">
-        <a href="https://www.instagram.com/maykel_yammine/" target="_blank" class="by-m">by M</a>
-    </div>
-
+            <div class="logo" onclick="showPageOptimized('home')">
+                <img src="https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/alecoslogo-removebg-preview.webp" 
+                     alt="Aleco's café resto" 
+                     class="logo-image">
+                <a href="https://www.instagram.com/maykel_yammine/" target="_blank" class="by-m">by M</a>
+            </div>
             <ul class="nav-links">
                 <li><a href="#" onclick="showPageOptimized('home'); return false;">Home</a></li>
                 <li><a href="#" onclick="showPageOptimized('about'); return false;">About</a></li>
                 <li><a href="#" onclick="showPageOptimized('menu'); return false;">Menu</a></li>
                 <li><a href="#" onclick="showPageOptimized('contact'); return false;">Contact</a></li>
-                <li>
-                    <div class="settings-icon" onclick="openAdminModal()" title="Admin Settings">
-                        ⚙️
-                    </div>
-                </li>
+                <li><div class="settings-icon" onclick="openAdminModal()" title="Admin Settings">⚙️</div></li>
                 <li>
                     <div class="cart-icon" onclick="toggleCart()">
                         🛒
@@ -1525,11 +1325,8 @@
                     </div>
                 </li>
             </ul>
-
             <div style="display: flex; align-items: center; gap: 10px;">
-                <div class="settings-icon" onclick="openAdminModal()" title="Admin Settings" style="display: none; font-size: 1.2rem;">
-                    ⚙️
-                </div>
+                <div class="settings-icon" onclick="openAdminModal()" title="Admin Settings" style="display: none; font-size: 1.2rem;">⚙️</div>
                 <div class="mobile-cart-icon" onclick="toggleCart()">
                     🛒
                     <span class="cart-count" id="mobileCartCountIcon">0</span>
@@ -1543,7 +1340,6 @@
         </div>
     </nav>
 
-    <!-- Mobile Navigation -->
     <div class="mobile-nav" id="mobileNav">
         <div class="mobile-nav-item" onclick="showPageOptimized('home')">🏠 Home</div>
         <div class="mobile-nav-item" onclick="showPageOptimized('about')">📖 About</div>
@@ -1553,35 +1349,28 @@
         <div class="mobile-nav-item" onclick="toggleCart()">🛒 Cart (<span id="mobileCartCount">0</span>)</div>
     </div>
 
-    <!-- Success Message -->
     <div class="success-message" id="successMessage"></div>
 
-    <!-- Home Page -->
     <div id="home" class="page active">
         <section class="hero">
             <div class="hero-content">
-    <!-- Logo in place of ALECO'S text -->
-    <div class="hero-logo">
-        <img src="https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/alecoslogo-removebg-preview.webp" 
-             alt="Aleco's café resto" 
-             style="height: 150px; width: auto; margin-bottom: 20px;">
-    </div>
-    <p class="hero-subtitle">Delicious Food & Drinks</p>
-    <button class="cta-button" onclick="showPageOptimized('menu')">View Menu</button>
-</div>
+                <div class="hero-logo">
+                    <img src="https://raw.githubusercontent.com/alecosrestaurant/alecosrestaurant.github.io/main/alecoslogo-removebg-preview.webp" 
+                         alt="Aleco's café resto">
+                </div>
+                <p class="hero-subtitle">Delicious Food & Drinks</p>
+                <button class="cta-button" onclick="showPageOptimized('menu')">View Menu</button>
+            </div>
         </section>
     </div>
 
-    <!-- About Page -->
     <div id="about" class="page">
         <section class="about-page">
             <div class="about-content">
                 <h2>About Aleco's</h2>
                 <p>At Aleco's, we pride ourselves on serving fresh, delicious meals made with the finest ingredients. From crispy chicken tenders to gourmet burgers, fresh salads to refreshing beverages, we offer something for everyone.</p>
                 <p>Our commitment is to provide you with an unforgettable dining experience in a warm and welcoming atmosphere. Every dish is prepared with care and passion to ensure the highest quality.</p>
-                <div class="contact-info">
-                    📞 Call us: 06-661292
-                </div>
+                <div class="contact-info">📞 Call us: 06-661292</div>
                 <a href="https://www.google.com/maps/search/alecos+resto+cafe+zgharta" target="_blank" class="location-link">
                     <span class="icon">📍</span> View Our Location in Zgharta
                 </a>
@@ -1589,13 +1378,11 @@
         </section>
     </div>
 
-    <!-- Menu Page -->
     <div id="menu" class="page">
         <div class="menu-page">
             <div class="menu-container">
                 <h1 class="page-title">OUR MENU</h1>
                 <p class="page-subtitle">Choose from our delicious selection</p>
-
                 <div class="category-pills" id="categoryPills"></div>
                 <div class="menu-items-container" id="menu-items-display">
                     <div class="loading">Loading menu...</div>
@@ -1604,13 +1391,11 @@
         </div>
     </div>
 
-    <!-- Contact Page -->
     <div id="contact" class="page">
         <section class="contact-page">
             <div class="contact-container">
                 <h2>Get In Touch</h2>
                 <p>We'd love to hear from you! Contact us to place your order or for any inquiries.</p>
-                
                 <div class="contact-details">
                     <div class="contact-item">
                         <span class="icon">📞</span>
@@ -1633,26 +1418,22 @@
                         <span><strong>Instagram:</strong> @alecoresto_cafe</span>
                     </a>
                 </div>
-
                 <a href="tel:06661292" class="contact-cta">Call Now</a>
             </div>
         </section>
     </div>
 
-    <!-- Cart Sidebar -->
     <div class="cart-sidebar" id="cartSidebar">
         <div class="cart-header">
             <h2>Your Order</h2>
             <button class="close-cart" onclick="toggleCart()">×</button>
         </div>
-        
         <div class="cart-items" id="cartItems">
             <div class="empty-cart">
                 <div class="empty-cart-icon">🛒</div>
                 <p>Your bag is empty</p>
             </div>
         </div>
-        
         <div class="cart-footer" id="cartFooter" style="display: none;">
             <div class="cart-total">
                 <div class="total-row">
@@ -1664,43 +1445,32 @@
                     <span class="total-amount" id="totalLBP">0 LBP</span>
                 </div>
             </div>
-            <button class="whatsapp-order-btn" onclick="sendWhatsAppOrder()">
-                📱 Order via WhatsApp
-            </button>
+            <button class="whatsapp-order-btn" onclick="sendWhatsAppOrder()">📱 Order via WhatsApp</button>
         </div>
     </div>
 
-    <!-- Admin Modal -->
     <div class="admin-modal" id="adminModal">
-        <!-- Login Screen -->
         <div class="login-container" id="loginScreen">
             <div style="text-align: center;">
                 <div class="logo-text" style="font-size: 2.5rem; margin-bottom: 0.5rem;">ALECO'S</div>
                 <div class="admin-badge">ADMIN PANEL</div>
             </div>
-
             <h2 style="text-align: center; color: var(--accent); margin-bottom: 2rem;">🔒 Admin Login</h2>
-
             <div id="errorMessage" class="error-message"></div>
-
             <form id="loginForm">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" required autocomplete="username">
                 </div>
-
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" required autocomplete="current-password">
                 </div>
-
                 <button type="submit" class="login-btn">Login to Dashboard</button>
             </form>
-
             <div class="close-admin" onclick="closeAdminModal()">← Back to Menu</div>
         </div>
 
-        <!-- Admin Dashboard -->
         <div class="admin-dashboard" id="adminDashboard">
             <div class="admin-header">
                 <div>
@@ -1709,20 +1479,16 @@
                 </div>
                 <button class="btn btn-logout" onclick="logoutAdmin()">🚪 Logout</button>
             </div>
-
             <div style="margin-bottom: 2rem;">
                 <h2 class="section-title">📂 Menu Categories</h2>
                 <div class="categories-grid" id="adminCategoriesGrid">
                     <div class="loading">Loading...</div>
                 </div>
             </div>
-
             <div class="items-section">
                 <div class="items-header">
                     <h2 class="section-title" id="adminCategoryTitle">Select a Category</h2>
-                    <button class="btn btn-add-item" id="adminAddItemBtn" onclick="openItemModal()" style="display: none;">
-                        ➕ Add New Item
-                    </button>
+                    <button class="btn btn-add-item" id="adminAddItemBtn" onclick="openItemModal()" style="display: none;">➕ Add New Item</button>
                 </div>
                 <div class="items-grid" id="adminItemsGrid">
                     <div class="empty-state">
@@ -1734,854 +1500,693 @@
         </div>
     </div>
 
-    <!-- Item Add/Edit Modal -->
     <div class="item-modal" id="itemModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="itemModalTitle">Add New Item</h3>
                 <button class="close-modal" onclick="closeItemModal()">×</button>
             </div>
-
-            <form id="itemForm">
-                <div class="form-group">
-                    <label>Item Name *</label>
-                    <input type="text" class="form-input" id="itemName" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Price (USD) *</label>
-                    <input type="number" step="0.01" class="form-input" id="itemPrice" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Description (optional)</label>
-                    <textarea class="form-input" id="itemDescription"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Item Image *</label>
-                    <div class="upload-btn-wrapper">
-                        <div class="upload-btn">📸 Choose Image File</div>
-                        <input type="file" accept="image/*" onchange="handleImageUpload(event)">
+            <div class="modal-body">
+                <form id="itemForm">
+                    <div class="form-group">
+                        <label>Item Name *</label>
+                        <input type="text" class="form-input" id="itemName" required>
                     </div>
-                    <div style="text-align: center; margin: 1rem 0;">
-                        <button type="button" style="background: none; border: none; color: var(--accent); cursor: pointer; text-decoration: underline;" onclick="toggleUrlInput()">
-                            Or paste image URL
-                        </button>
+                    <div class="form-group">
+                        <label>Price (USD) *</label>
+                        <input type="number" step="0.01" class="form-input" id="itemPrice" required>
                     </div>
-                    <input type="text" class="form-input" id="imageUrl" placeholder="https://example.com/image.jpg" style="display: none;" onchange="handleUrlInput(event)">
-                    <div class="image-preview">
-                        <img id="imagePreview" style="display: none;">
+                    <div class="form-group">
+                        <label>Description (optional)</label>
+                        <textarea class="form-input" id="itemDescription"></textarea>
                     </div>
-                </div>
-
+                    <div class="form-group">
+                        <label>Image URL * (paste GitHub or external image URL)</label>
+                        <input type="text" class="form-input" id="imageUrl" placeholder="https://example.com/image.jpg" required>
+                        <div class="image-preview">
+                            <img id="imagePreview" style="display: none;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
                 <div class="modal-actions">
                     <button type="button" class="btn btn-cancel" onclick="closeItemModal()">Cancel</button>
-                    <button type="submit" class="btn btn-submit">💾 Save Item</button>
+                    <button type="submit" class="btn btn-submit" onclick="submitItemForm(event)">💾 Save Item</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
-   <!-- Footer -->
-<footer>
-    <p style="color: white;">
-        Designed & Developed by 
-        <a href="https://www.instagram.com/maykel_yammine/" 
-           target="_blank" 
-           style="color: white; text-decoration: underline; font-weight: bold;">
-           Maykel Yammine
-        </a>
-    </p>
-</footer>
+    <footer>
+        <p style="color: white;">
+            Designed & Developed by 
+            <a href="https://www.instagram.com/maykel_yammine/" 
+               target="_blank" 
+               style="color: white; text-decoration: underline; font-weight: bold;">
+               Maykel Yammine
+            </a>
+        </p>
+    </footer>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<script>
-    // Firebase Configuration
-    const firebaseConfig = {
-        apiKey: "AIzaSyBYv-Amq3Hh7LGmz9nhTcDeK1T5BifLaDw",
-        authDomain: "alecos-restaurant.firebaseapp.com",
-        databaseURL: "https://alecos-restaurant-default-rtdb.europe-west1.firebasedatabase.app",
-        projectId: "alecos-restaurant",
-        storageBucket: "alecos-restaurant.firebasestorage.app",
-        messagingSenderId: "975810557780",
-        appId: "1:975810557780:web:89c8430d7b4c7cd1e4bac1"
-    };
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBYv-Amq3Hh7LGmz9nhTcDeK1T5BifLaDw",
+            authDomain: "alecos-restaurant.firebaseapp.com",
+            databaseURL: "https://alecos-restaurant-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "alecos-restaurant",
+            storageBucket: "alecos-restaurant.firebasestorage.app",
+            messagingSenderId: "975810557780",
+            appId: "1:975810557780:web:89c8430d7b4c7cd1e4bac1"
+        };
 
-    // Initialize Firebase
-    let app, auth, database, storage;
-    function initializeFirebase() {
-        try {
-            app = firebase.initializeApp(firebaseConfig);
-            auth = firebase.auth();
-            database = firebase.database();
-            storage = firebase.storage();
-            console.log('✅ Firebase initialized successfully');
-            return true;
-        } catch (error) {
-            console.error('❌ Firebase initialization error:', error);
-            return false;
-        }
-    }
-
-    // ==========================================
-    // CACHING CONFIGURATION
-    // ==========================================
-    const CACHE_CONFIG = {
-        MENU_KEY: 'alecos_menu_cache_v2',
-        MENU_DURATION: 3600000, // 1 hour cache
-        VERSION: '2.0'
-    };
-
-    // ADMIN CACHE CONFIGURATION
-    const ADMIN_CACHE_CONFIG = {
-        CATEGORIES_KEY: 'admin_categories_cache',
-        ITEMS_KEY_PREFIX: 'admin_items_',
-        CACHE_DURATION: 300000, // 5 minutes
-        VERSION: '1.0'
-    };
-
-    // Global variables
-    let cart = [];
-    let menuCategories = {};
-    let isAdminLoggedIn = false;
-    let currentAdminCategory = null;
-    let currentEditItem = null;
-    let currentImageUrl = null;
-
-    const categoryConfig = {
-        'salads': { name: 'Salads', icon: '🥗', title: 'SALADS' },
-        'platters': { name: 'Platters', icon: '🍽️', title: 'PLATTERS' },
-        'crispy': { name: 'Crispy', icon: '🍗', title: 'CRISPY' },
-        'sandwiches': { name: 'Sandwiches', icon: '🥪', title: 'SANDWICHES' },
-        'tenders': { name: 'Tenders', icon: '🍖', title: 'TENDERS' },
-        'drinks': { name: 'Beverages', icon: '🥤', title: 'BEVERAGES' },
-        'sauces': { name: 'Sauces', icon: '🌶️', title: 'SAUCES' },
-        'desserts': { name: 'Desserts', icon: '🍰', title: 'DESSERTS' }
-    };
-
-    // Initialize Firebase
-    initializeFirebase();
-
-    // ==========================================
-    // CACHE CLEARING FUNCTIONS
-    // ==========================================
-
-    /**
-     * Clear menu cache when menu is updated
-     */
-    function clearMenuCache() {
-        localStorage.removeItem(CACHE_CONFIG.MENU_KEY);
-        console.log('🗑️ Menu cache cleared');
-    }
-
-    /**
-     * Clear admin cache when admin makes changes
-     */
-    function clearAdminCache() {
-        // Clear categories cache
-        localStorage.removeItem(ADMIN_CACHE_CONFIG.CATEGORIES_KEY);
-        
-        // Clear all items caches
-        const keys = Object.keys(localStorage);
-        keys.forEach(key => {
-            if (key.startsWith(ADMIN_CACHE_CONFIG.ITEMS_KEY_PREFIX)) {
-                localStorage.removeItem(key);
+        let app, auth, database;
+        function initializeFirebase() {
+            try {
+                app = firebase.initializeApp(firebaseConfig);
+                auth = firebase.auth();
+                database = firebase.database();
+                console.log('✅ Firebase initialized');
+                return true;
+            } catch (error) {
+                console.error('❌ Firebase error:', error);
+                return false;
             }
-        });
-        
-        console.log('🗑️ Admin cache cleared');
-    }
+        }
 
-    // ==========================================
-    // OPTIMIZED MENU LOADING WITH CACHING
-    // ==========================================
-    async function loadMenuOptimized() {
-        try {
-            console.log('🔄 Loading menu...');
-            
-            // 1. Check cache first
-            const cached = localStorage.getItem(CACHE_CONFIG.MENU_KEY);
-            if (cached) {
-                try {
-                    const { data, timestamp, version } = JSON.parse(cached);
-                    const age = Date.now() - timestamp;
-                    
-                    if (age < CACHE_CONFIG.MENU_DURATION && version === CACHE_CONFIG.VERSION) {
-                        console.log(`✅ Loaded from cache (saved ${(2.2).toFixed(1)}MB download)`);
-                        menuCategories = data;
-                        renderCategoryPills();
-                        const firstCategory = Object.keys(menuCategories)[0];
-                        if (firstCategory) {
-                            showCategory(firstCategory, true);
-                        }
-                        return; // STOP HERE - no Firebase call needed!
+        // ==========================================
+        // ULTRA-OPTIMIZED BANDWIDTH SAVING SYSTEM
+        // ==========================================
+        
+        const CACHE_CONFIG = {
+            MENU_KEY: 'alecos_menu_v4',
+            VERSION_KEY: 'menu_version_v4',
+            CACHE_DURATION: 86400000, // 24 hours
+        };
+
+        let cart = [];
+        let menuCategories = {};
+        let isAdminLoggedIn = false;
+        let currentAdminCategory = null;
+        let currentEditItem = null;
+
+        const categoryConfig = {
+            'salads': { name: 'Salads', icon: '🥗', title: 'SALADS' },
+            'platters': { name: 'Platters', icon: '🍽️', title: 'PLATTERS' },
+            'crispy': { name: 'Crispy', icon: '🍗', title: 'CRISPY' },
+            'sandwiches': { name: 'Sandwiches', icon: '🥪', title: 'SANDWICHES' },
+            'tenders': { name: 'Tenders', icon: '🍖', title: 'TENDERS' },
+            'drinks': { name: 'Beverages', icon: '🥤', title: 'BEVERAGES' },
+            'sauces': { name: 'Sauces', icon: '🌶️', title: 'SAUCES' },
+            'desserts': { name: 'Desserts', icon: '🍰', title: 'DESSERTS' }
+        };
+
+        initializeFirebase();
+
+        /**
+         * 🔥 CRITICAL: Check version number ONLY (1KB download)
+         * Compare with local cache version
+         * Only download full menu if version mismatch
+         */
+        async function loadMenuOptimized() {
+            try {
+                console.log('🔄 Checking menu version...');
+                
+                // 1. Get local cache
+                const cachedMenu = localStorage.getItem(CACHE_CONFIG.MENU_KEY);
+                const cachedVersion = localStorage.getItem(CACHE_CONFIG.VERSION_KEY);
+                
+                // 2. Check Firebase version number ONLY (~1KB download)
+                const versionSnapshot = await database.ref('menuVersion').once('value');
+                const firebaseVersion = versionSnapshot.val() || 1;
+                
+                console.log(`Local version: ${cachedVersion}, Firebase version: ${firebaseVersion}`);
+                
+                // 3. If versions match AND cache exists → use cache (0 bytes!)
+                if (cachedMenu && cachedVersion && parseInt(cachedVersion) === firebaseVersion) {
+                    console.log('✅ Using cached menu (0 MB downloaded!)');
+                    menuCategories = JSON.parse(cachedMenu);
+                    renderCategoryPills();
+                    const firstCategory = Object.keys(menuCategories)[0];
+                    if (firstCategory) {
+                        showCategory(firstCategory, true);
                     }
-                } catch (e) {
-                    console.log('Cache invalid, fetching fresh data');
+                    return; // DONE! No Firebase download needed!
                 }
-            }
-            
-            // 2. Cache miss - download from Firebase
-            console.log('🌐 Downloading from Firebase...');
-            const snapshot = await database.ref('menu').once('value');
-            menuCategories = snapshot.val();
+                
+                // 4. Version mismatch → download full menu (35MB)
+                console.log('⚠️ Version mismatch - downloading fresh menu...');
+                const snapshot = await database.ref('menu').once('value');
+                menuCategories = snapshot.val();
 
-            if (!menuCategories) {
-                menuCategories = {};
-                for (const [categoryId, config] of Object.entries(categoryConfig)) {
-                    menuCategories[categoryId] = {
-                        title: config.title,
-                        items: []
-                    };
+                if (!menuCategories) {
+                    menuCategories = {};
+                    for (const [categoryId, config] of Object.entries(categoryConfig)) {
+                        menuCategories[categoryId] = {
+                            title: config.title,
+                            items: []
+                        };
+                    }
                 }
-            }
 
-            // 3. Save to cache
-            localStorage.setItem(CACHE_CONFIG.MENU_KEY, JSON.stringify({
-                data: menuCategories,
-                timestamp: Date.now(),
-                version: CACHE_CONFIG.VERSION
-            }));
-            
-            console.log('✅ Menu loaded and cached');
-            
-            // 4. Render
-            renderCategoryPills();
-            const firstCategory = Object.keys(menuCategories)[0];
-            if (firstCategory) {
-                showCategory(firstCategory, true);
-            }
-        } catch (error) {
-            console.error('Error loading menu:', error);
-            document.getElementById('menu-items-display').innerHTML = 
-                '<div class="loading">Error loading menu. Please refresh.</div>';
-        }
-    }
-
-    // ==========================================
-    // OPTIMIZED PAGE NAVIGATION
-    // ==========================================
-    function showPageOptimized(pageId) {
-        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        document.getElementById('mobileNav').classList.remove('active');
-        document.getElementById('cartSidebar').classList.remove('active');
-        window.scrollTo(0, 0);
-        
-        // CRITICAL FIX: Only load menu if it's not already loaded
-        if (pageId === 'menu') {
-            // Check if menu is already loaded
-            if (!menuCategories || Object.keys(menuCategories).length === 0) {
-                loadMenuOptimized(); // Use optimized version
-            } else {
-                console.log('✅ Menu already loaded (0 bytes downloaded)');
-                // Just re-render what we have
+                // 5. Save to cache with new version
+                localStorage.setItem(CACHE_CONFIG.MENU_KEY, JSON.stringify(menuCategories));
+                localStorage.setItem(CACHE_CONFIG.VERSION_KEY, firebaseVersion.toString());
+                
+                console.log('✅ Menu downloaded and cached');
+                
+                // 6. Render
                 renderCategoryPills();
                 const firstCategory = Object.keys(menuCategories)[0];
                 if (firstCategory) {
                     showCategory(firstCategory, true);
                 }
+            } catch (error) {
+                console.error('Error loading menu:', error);
+                document.getElementById('menu-items-display').innerHTML = 
+                    '<div class="loading">Error loading menu. Please refresh.</div>';
             }
         }
-    }
 
-    // ==========================================
-    // ORIGINAL FUNCTIONS (UPDATED)
-    // ==========================================
-
-    // Render category pills
-    function renderCategoryPills() {
-        const pillsContainer = document.getElementById('categoryPills');
-        if (!pillsContainer) return;
-        
-        let pillsHTML = '';
-        Object.keys(menuCategories).forEach((categoryId, index) => {
-            const config = categoryConfig[categoryId] || { name: categoryId, icon: '🍽️' };
-            const isActive = index === 0 ? 'active' : '';
-            pillsHTML += `
-                <div class="category-pill ${isActive}" onclick="showCategory('${categoryId}')">
-                    ${config.icon} ${config.name}
-                </div>
-            `;
-        });
-        
-        pillsContainer.innerHTML = pillsHTML || '<div class="loading">No categories available</div>';
-    }
-
-    // Show category items - FIXED VERSION
-    function showCategory(categoryId, autoLoad = false) {
-        // Update active button
-        if (!autoLoad && event && event.target) {
-            document.querySelectorAll('.category-pill').forEach(pill => {
-                pill.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
-        
-        const categoryData = menuCategories[categoryId];
-        if (!categoryData) {
-            document.getElementById('menu-items-display').innerHTML = 
-                '<div class="loading">No items in this category</div>';
-            return;
-        }
-
-        const config = categoryConfig[categoryId] || { name: categoryId };
-        
-        let itemsHTML = `
-            <div class="menu-category-section">
-                <div class="category-header">
-                    <h2 class="category-title">${categoryData.title || config.title || config.name}</h2>
-                    <div class="category-line"></div>
-                </div>
-                <div class="menu-items">
-        `;
-        
-        // Check if items array exists and has content
-        if (categoryData.items && categoryData.items.length > 0) {
-            categoryData.items.forEach(item => {
-                // Safely escape the item name
-                const escapedName = item.name ? item.name.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Item';
-                const itemPrice = item.price || 0;
-                const itemImage = item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400';
+        /**
+         * Increment version when admin updates menu
+         */
+        async function incrementMenuVersion() {
+            try {
+                const snapshot = await database.ref('menuVersion').once('value');
+                const currentVersion = snapshot.val() || 1;
+                const newVersion = currentVersion + 1;
                 
+                await database.ref('menuVersion').set(newVersion);
+                console.log(`✅ Menu version updated: ${currentVersion} → ${newVersion}`);
+                
+                // Clear local cache
+                localStorage.removeItem(CACHE_CONFIG.MENU_KEY);
+                localStorage.removeItem(CACHE_CONFIG.VERSION_KEY);
+            } catch (error) {
+                console.error('Error incrementing version:', error);
+            }
+        }
+
+        function showPageOptimized(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.getElementById('mobileNav').classList.remove('active');
+            document.getElementById('cartSidebar').classList.remove('active');
+            window.scrollTo(0, 0);
+            
+            if (pageId === 'menu') {
+                if (!menuCategories || Object.keys(menuCategories).length === 0) {
+                    loadMenuOptimized();
+                } else {
+                    console.log('✅ Menu already loaded');
+                    renderCategoryPills();
+                    const firstCategory = Object.keys(menuCategories)[0];
+                    if (firstCategory) {
+                        showCategory(firstCategory, true);
+                    }
+                }
+            }
+        }
+
+        function renderCategoryPills() {
+            const pillsContainer = document.getElementById('categoryPills');
+            if (!pillsContainer) return;
+            
+            let pillsHTML = '';
+            Object.keys(menuCategories).forEach((categoryId, index) => {
+                const config = categoryConfig[categoryId] || { name: categoryId, icon: '🍽️' };
+                const isActive = index === 0 ? 'active' : '';
+                pillsHTML += `
+                    <div class="category-pill ${isActive}" onclick="showCategory('${categoryId}')">
+                        ${config.icon} ${config.name}
+                    </div>
+                `;
+            });
+            
+            pillsContainer.innerHTML = pillsHTML;
+        }
+
+        function showCategory(categoryId, autoLoad = false) {
+            if (!autoLoad && event && event.target) {
+                document.querySelectorAll('.category-pill').forEach(pill => {
+                    pill.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
+            
+            const categoryData = menuCategories[categoryId];
+            if (!categoryData) {
+                document.getElementById('menu-items-display').innerHTML = 
+                    '<div class="loading">No items in this category</div>';
+                return;
+            }
+
+            const config = categoryConfig[categoryId] || { name: categoryId };
+            
+            let itemsHTML = `
+                <div class="menu-category-section">
+                    <div class="category-header">
+                        <h2 class="category-title">${categoryData.title || config.title || config.name}</h2>
+                        <div class="category-line"></div>
+                    </div>
+                    <div class="menu-items">
+            `;
+            
+            if (categoryData.items && categoryData.items.length > 0) {
+                categoryData.items.forEach(item => {
+                    const escapedName = item.name ? item.name.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Item';
+                    const itemPrice = item.price || 0;
+                    const itemImage = item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400';
+                    
+                    itemsHTML += `
+                        <div class="menu-item">
+                            <img src="${itemImage}" alt="${item.name || 'Item'}" class="menu-item-image">
+                            <div class="item-content">
+                                <div class="item-name">${item.name || 'Item'}</div>
+                                ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
+                                <div class="item-footer">
+                                    <div class="item-price">$${itemPrice.toFixed(2)}</div>
+                                    <button class="add-to-bag-btn" onclick="addToCart('${escapedName}', ${itemPrice})">
+                                        Add to Bag
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
                 itemsHTML += `
-                    <div class="menu-item">
-                        <img src="${itemImage}" alt="${item.name || 'Item'}" class="menu-item-image">
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-light);">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🍽️</div>
+                        <p>No items in this category yet</p>
+                    </div>
+                `;
+            }
+            
+            itemsHTML += '</div></div>';
+            document.getElementById('menu-items-display').innerHTML = itemsHTML;
+        }
+
+        function addToCart(itemName, itemPrice) {
+            cart.push({
+                name: itemName,
+                price: itemPrice,
+                id: Date.now() + Math.random()
+            });
+            updateCart();
+            
+            if (event && event.target) {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Added!';
+                btn.style.background = '#25D366';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 1000);
+            }
+        }
+
+        function removeFromCart(itemId, e) {
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            cart = cart.filter(item => item.id !== itemId);
+            updateCart();
+        }
+
+        function updateCart() {
+            const count = cart.length;
+            document.getElementById('cartCount').textContent = count;
+            document.getElementById('mobileCartCount').textContent = count;
+            document.getElementById('mobileCartCountIcon').textContent = count;
+            
+            const cartItems = document.getElementById('cartItems');
+            const cartFooter = document.getElementById('cartFooter');
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <p>Your bag is empty</p>
+                    </div>
+                `;
+                cartFooter.style.display = 'none';
+            } else {
+                let html = '';
+                cart.forEach(item => {
+                    html += `
+                        <div class="cart-item">
+                            <div class="cart-item-header">
+                                <span class="cart-item-name">${item.name}</span>
+                                <button class="remove-item" onclick="removeFromCart(${item.id}, event)">Remove</button>
+                            </div>
+                            <div style="margin-top: 0.5rem;">
+                                <span class="cart-item-price">$${item.price.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                cartItems.innerHTML = html;
+                cartFooter.style.display = 'block';
+                
+                const totalUSD = cart.reduce((sum, item) => sum + item.price, 0);
+                const totalLBP = totalUSD * 89500;
+                
+                document.getElementById('totalUSD').textContent = `$${totalUSD.toFixed(2)}`;
+                document.getElementById('totalLBP').textContent = `${totalLBP.toLocaleString()} LBP`;
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cartSidebar').classList.toggle('active');
+            document.getElementById('mobileNav').classList.remove('active');
+        }
+
+        function sendWhatsAppOrder() {
+            if (cart.length === 0) {
+                alert('Your bag is empty!');
+                return;
+            }
+            
+            const totalUSD = cart.reduce((sum, item) => sum + item.price, 0);
+            const totalLBP = totalUSD * 89500;
+            
+            let message = '🍽️ *New Order from Aleco\'s Website*\n\n*Items:*\n';
+            
+            let itemGroups = {};
+            cart.forEach(item => {
+                if (!itemGroups[item.name]) {
+                    itemGroups[item.name] = { count: 1, price: item.price };
+                } else {
+                    itemGroups[item.name].count++;
+                    itemGroups[item.name].price += item.price;
+                }
+            });
+            
+            Object.entries(itemGroups).forEach(([name, data], index) => {
+                message += `${index + 1}. ${name} ×${data.count} - $${data.price.toFixed(2)}\n`;
+            });
+            
+            message += `\n*Total:* $${totalUSD.toFixed(2)} (${totalLBP.toLocaleString()} LBP)\n\nThank you! 🙏`;
+            
+            window.open(`https://wa.me/96103979339?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function toggleMenu() {
+            document.getElementById('mobileNav').classList.toggle('active');
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.add('show');
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('adminDashboard').classList.remove('show');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModal').classList.remove('show');
+            document.getElementById('loginForm').reset();
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            errorMessage.classList.remove('show');
+            
+            try {
+                const email = `${username}@alecos.admin`;
+                await auth.signInWithEmailAndPassword(email, password);
+                
+                isAdminLoggedIn = true;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminDashboard').classList.add('show');
+                
+                loadAdminCategories();
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = '❌ Invalid username or password';
+                errorMessage.classList.add('show');
+            }
+        });
+
+        async function loadAdminCategories() {
+            const grid = document.getElementById('adminCategoriesGrid');
+            grid.innerHTML = '<div class="loading">⏳ Loading...</div>';
+            
+            try {
+                const snapshot = await database.ref('menu').once('value');
+                const menuData = snapshot.val() || {};
+                renderAdminCategories(menuData);
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                grid.innerHTML = '<div class="empty-state"><p>Error loading categories</p></div>';
+            }
+        }
+
+        function renderAdminCategories(menuData) {
+            let html = '';
+            for (const [categoryId, config] of Object.entries(categoryConfig)) {
+                const categoryData = menuData[categoryId];
+                const itemCount = categoryData?.items?.length || 0;
+                
+                html += `
+                    <div class="category-card" onclick="selectAdminCategory('${categoryId}')">
+                        <div class="category-icon">${config.icon}</div>
+                        <div class="category-name">${config.name}</div>
+                        <div class="category-count">${itemCount} items</div>
+                    </div>
+                `;
+            }
+            document.getElementById('adminCategoriesGrid').innerHTML = html;
+        }
+
+        async function selectAdminCategory(categoryId) {
+            currentAdminCategory = categoryId;
+            
+            document.querySelectorAll('#adminCategoriesGrid .category-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            if (event && event.target) {
+                event.target.closest('.category-card').classList.add('active');
+            }
+            
+            document.getElementById('adminCategoryTitle').textContent = categoryConfig[categoryId].name;
+            document.getElementById('adminAddItemBtn').style.display = 'block';
+            
+            await loadAdminItems(categoryId);
+        }
+
+        async function loadAdminItems(categoryId) {
+            const grid = document.getElementById('adminItemsGrid');
+            grid.innerHTML = '<div class="loading">⏳ Loading...</div>';
+            
+            try {
+                const snapshot = await database.ref(`menu/${categoryId}`).once('value');
+                const categoryData = snapshot.val();
+                renderAdminItems(categoryData);
+            } catch (error) {
+                console.error('Error loading items:', error);
+                grid.innerHTML = '<div class="empty-state"><p>Error loading items</p></div>';
+            }
+        }
+
+        function renderAdminItems(categoryData) {
+            const items = categoryData?.items || [];
+            
+            if (items.length === 0) {
+                document.getElementById('adminItemsGrid').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🍽️</div>
+                        <p>No items yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            items.forEach((item, index) => {
+                html += `
+                    <div class="item-card">
+                        <img src="${item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'}" alt="${item.name}" class="item-image">
                         <div class="item-content">
-                            <div class="item-name">${item.name || 'Item'}</div>
+                            <div class="item-name">${item.name}</div>
                             ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
-                            <div class="item-footer">
-                                <div class="item-price">$${itemPrice.toFixed(2)}</div>
-                                <button class="add-to-bag-btn" onclick="addToCart('${escapedName}', ${itemPrice})">
-                                    Add to Bag
-                                </button>
+                            <div class="item-price">$${(item.price || 0).toFixed(2)}</div>
+                            <div class="item-actions">
+                                <button class="btn btn-edit" onclick="editItem(${index})">✏️ Edit</button>
+                                <button class="btn btn-delete" onclick="deleteItem(${index})">🗑️ Delete</button>
                             </div>
                         </div>
                     </div>
                 `;
             });
-        } else {
-            itemsHTML += `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-light);">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🍽️</div>
-                    <p>No items in this category yet</p>
-                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Check back soon!</p>
-                </div>
-            `;
-        }
-        
-        itemsHTML += '</div></div>';
-        document.getElementById('menu-items-display').innerHTML = itemsHTML;
-    }
-
-    function addToCart(itemName, itemPrice) {
-        cart.push({
-            name: itemName,
-            price: itemPrice,
-            id: Date.now() + Math.random()
-        });
-        updateCart();
-        
-        if (event && event.target) {
-            const btn = event.target;
-            const originalText = btn.textContent;
-            btn.textContent = '✓ Added!';
-            btn.style.background = '#25D366';
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = '';
-            }, 1000);
-        }
-    }
-
-    function removeFromCart(itemId, e) {
-        if (e) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-        cart = cart.filter(item => item.id !== itemId);
-        updateCart();
-    }
-
-    function updateCart() {
-        const count = cart.length;
-        document.getElementById('cartCount').textContent = count;
-        document.getElementById('mobileCartCount').textContent = count;
-        document.getElementById('mobileCartCountIcon').textContent = count;
-        
-        const cartItems = document.getElementById('cartItems');
-        const cartFooter = document.getElementById('cartFooter');
-        
-        if (cart.length === 0) {
-            cartItems.innerHTML = `
-                <div class="empty-cart">
-                    <div class="empty-cart-icon">🛒</div>
-                    <p>Your bag is empty</p>
-                </div>
-            `;
-            cartFooter.style.display = 'none';
-        } else {
-            let html = '';
-            cart.forEach(item => {
-                html += `
-                    <div class="cart-item">
-                        <div class="cart-item-header">
-                            <span class="cart-item-name">${item.name}</span>
-                            <button class="remove-item" onclick="removeFromCart(${item.id}, event)">Remove</button>
-                        </div>
-                        <div style="margin-top: 0.5rem;">
-                            <span class="cart-item-price">$${item.price.toFixed(2)}</span>
-                        </div>
-                    </div>
-                `;
-            });
-            cartItems.innerHTML = html;
-            cartFooter.style.display = 'block';
             
-            const totalUSD = cart.reduce((sum, item) => sum + item.price, 0);
-            const totalLBP = totalUSD * 89500;
+            document.getElementById('adminItemsGrid').innerHTML = html;
+        }
+
+        function openItemModal() {
+            currentEditItem = null;
+            document.getElementById('itemModalTitle').textContent = 'Add New Item';
+            document.getElementById('itemForm').reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('imageUrl').value = '';
+            document.getElementById('itemModal').classList.add('show');
+        }
+
+        async function editItem(index) {
+            currentEditItem = index;
             
-            document.getElementById('totalUSD').textContent = `$${totalUSD.toFixed(2)}`;
-            document.getElementById('totalLBP').textContent = `${totalLBP.toLocaleString()} LBP`;
+            const snapshot = await database.ref(`menu/${currentAdminCategory}`).once('value');
+            const categoryData = snapshot.val();
+            const item = categoryData.items[index];
+            
+            document.getElementById('itemModalTitle').textContent = 'Edit Item';
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemPrice').value = item.price;
+            document.getElementById('itemDescription').value = item.description || '';
+            document.getElementById('imageUrl').value = item.image || '';
+            
+            if (item.image) {
+                document.getElementById('imagePreview').src = item.image;
+                document.getElementById('imagePreview').style.display = 'block';
+            }
+            
+            document.getElementById('itemModal').classList.add('show');
         }
-    }
 
-    function toggleCart() {
-        document.getElementById('cartSidebar').classList.toggle('active');
-        document.getElementById('mobileNav').classList.remove('active');
-    }
-
-    function sendWhatsAppOrder() {
-        if (cart.length === 0) {
-            alert('Your bag is empty!');
-            return;
+        async function deleteItem(index) {
+            if (!confirm('Delete this item?')) return;
+            
+            try {
+                const snapshot = await database.ref(`menu/${currentAdminCategory}`).once('value');
+                const categoryData = snapshot.val();
+                categoryData.items.splice(index, 1);
+                
+                await database.ref(`menu/${currentAdminCategory}`).set(categoryData);
+                
+                // 🔥 INCREMENT VERSION to force all users to refresh
+                await incrementMenuVersion();
+                
+                showSuccess('Item deleted!');
+                loadAdminItems(currentAdminCategory);
+                loadAdminCategories();
+                await loadMenuOptimized();
+            } catch (error) {
+                console.error('Error deleting item:', error);
+                alert('Error deleting item');
+            }
         }
-        
-        const totalUSD = cart.reduce((sum, item) => sum + item.price, 0);
-        const totalLBP = totalUSD * 89500;
-        
-        let message = '🍽️ *New Order from Aleco\'s Website*\n\n*Items:*\n';
-        
-        let itemGroups = {};
-        cart.forEach(item => {
-            if (!itemGroups[item.name]) {
-                itemGroups[item.name] = { count: 1, price: item.price };
+
+        document.getElementById('imageUrl').addEventListener('input', function() {
+            const url = this.value;
+            const preview = document.getElementById('imagePreview');
+            if (url) {
+                preview.src = url;
+                preview.style.display = 'block';
             } else {
-                itemGroups[item.name].count++;
-                itemGroups[item.name].price += item.price;
+                preview.style.display = 'none';
             }
         });
-        
-        Object.entries(itemGroups).forEach(([name, data], index) => {
-            message += `${index + 1}. ${name} ×${data.count} - $${data.price.toFixed(2)}\n`;
-        });
-        
-        message += `\n*Total:* $${totalUSD.toFixed(2)} (${totalLBP.toLocaleString()} LBP)\n\nThank you! 🙏`;
-        
-        window.open(`https://wa.me/96103979339?text=${encodeURIComponent(message)}`, '_blank');
-    }
 
-    function toggleMenu() {
-        document.getElementById('mobileNav').classList.toggle('active');
-    }
-
-    // Admin functions
-    function openAdminModal() {
-        document.getElementById('adminModal').classList.add('show');
-        document.getElementById('loginScreen').style.display = 'block';
-        document.getElementById('adminDashboard').classList.remove('show');
-    }
-
-    function closeAdminModal() {
-        document.getElementById('adminModal').classList.remove('show');
-        document.getElementById('loginForm').reset();
-        document.getElementById('errorMessage').classList.remove('show');
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const errorMessage = document.getElementById('errorMessage');
-        
-        errorMessage.classList.remove('show');
-        
-        try {
-            const email = `${username}@alecos.admin`;
-            await auth.signInWithEmailAndPassword(email, password);
+        async function submitItemForm(e) {
+            e.preventDefault();
             
-            isAdminLoggedIn = true;
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('adminDashboard').classList.add('show');
-            
-            loadAdminCategories();
-        } catch (error) {
-            console.error('Login error:', error);
-            errorMessage.textContent = '❌ Invalid username or password';
-            errorMessage.classList.add('show');
-        }
-    });
-
-    // ==========================================
-    // OPTIMIZED ADMIN FUNCTIONS WITH CACHING
-    // ==========================================
-
-    async function loadAdminCategories() {
-        const grid = document.getElementById('adminCategoriesGrid');
-        
-        // 1. Check cache first
-        const cached = localStorage.getItem(ADMIN_CACHE_CONFIG.CATEGORIES_KEY);
-        if (cached) {
-            try {
-                const { data, timestamp, version } = JSON.parse(cached);
-                if (Date.now() - timestamp < ADMIN_CACHE_CONFIG.CACHE_DURATION && 
-                    version === ADMIN_CACHE_CONFIG.VERSION) {
-                    console.log('✅ Admin categories loaded from cache');
-                    renderAdminCategories(data);
-                    return;
-                }
-            } catch (e) {
-                console.log('Admin cache invalid');
+            const imageUrl = document.getElementById('imageUrl').value;
+            if (!imageUrl) {
+                alert('Please enter an image URL');
+                return;
             }
-        }
-        
-        // 2. Cache miss - load from Firebase
-        grid.innerHTML = '<div class="loading">⏳ Loading...</div>';
-        
-        try {
-            const snapshot = await database.ref('menu').once('value');
-            const menuData = snapshot.val() || {};
             
-            // Save to cache
-            localStorage.setItem(ADMIN_CACHE_CONFIG.CATEGORIES_KEY, JSON.stringify({
-                data: menuData,
-                timestamp: Date.now(),
-                version: ADMIN_CACHE_CONFIG.VERSION
-            }));
-            
-            renderAdminCategories(menuData);
-        } catch (error) {
-            console.error('Error loading categories:', error);
-            grid.innerHTML = '<div class="empty-state"><p>Error loading categories</p></div>';
-        }
-    }
-
-    function renderAdminCategories(menuData) {
-        let html = '';
-        for (const [categoryId, config] of Object.entries(categoryConfig)) {
-            const categoryData = menuData[categoryId];
-            const itemCount = categoryData?.items?.length || 0;
-            
-            html += `
-                <div class="category-card" onclick="selectAdminCategory('${categoryId}')">
-                    <div class="category-icon">${config.icon}</div>
-                    <div class="category-name">${config.name}</div>
-                    <div class="category-count">${itemCount} items</div>
-                </div>
-            `;
-        }
-        document.getElementById('adminCategoriesGrid').innerHTML = html;
-    }
-
-    async function selectAdminCategory(categoryId) {
-        currentAdminCategory = categoryId;
-        
-        document.querySelectorAll('#adminCategoriesGrid .category-card').forEach(card => {
-            card.classList.remove('active');
-        });
-        if (event && event.target) {
-            event.target.closest('.category-card').classList.add('active');
-        }
-        
-        document.getElementById('adminCategoryTitle').textContent = categoryConfig[categoryId].name;
-        document.getElementById('adminAddItemBtn').style.display = 'block';
-        
-        await loadAdminItems(categoryId);
-    }
-
-    async function loadAdminItems(categoryId) {
-        const grid = document.getElementById('adminItemsGrid');
-        
-        // 1. Check cache first
-        const cacheKey = `${ADMIN_CACHE_CONFIG.ITEMS_KEY_PREFIX}${categoryId}`;
-        const cached = localStorage.getItem(cacheKey);
-        
-        if (cached) {
-            try {
-                const { data, timestamp, version } = JSON.parse(cached);
-                if (Date.now() - timestamp < ADMIN_CACHE_CONFIG.CACHE_DURATION && 
-                    version === ADMIN_CACHE_CONFIG.VERSION) {
-                    console.log(`✅ Category ${categoryId} loaded from cache`);
-                    renderAdminItems(data);
-                    return;
-                }
-            } catch (e) {
-                console.log('Admin items cache invalid');
-            }
-        }
-        
-        // 2. Cache miss - load from Firebase
-        grid.innerHTML = '<div class="loading">⏳ Loading...</div>';
-        
-        try {
-            const snapshot = await database.ref(`menu/${categoryId}`).once('value');
-            const categoryData = snapshot.val();
-            
-            // Save to cache
-            localStorage.setItem(cacheKey, JSON.stringify({
-                data: categoryData,
-                timestamp: Date.now(),
-                version: ADMIN_CACHE_CONFIG.VERSION
-            }));
-            
-            renderAdminItems(categoryData);
-        } catch (error) {
-            console.error('Error loading items:', error);
-            grid.innerHTML = '<div class="empty-state"><p>Error loading items</p></div>';
-        }
-    }
-
-    function renderAdminItems(categoryData) {
-        const items = categoryData?.items || [];
-        
-        if (items.length === 0) {
-            document.getElementById('adminItemsGrid').innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">🍽️</div>
-                    <p>No items yet</p>
-                </div>
-            `;
-            return;
-        }
-        
-        let html = '';
-        items.forEach((item, index) => {
-            html += `
-                <div class="item-card">
-                    <img src="${item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400'}" alt="${item.name}" class="item-image">
-                    <div class="item-content">
-                        <div class="item-name">${item.name}</div>
-                        ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
-                        <div class="item-price">$${(item.price || 0).toFixed(2)}</div>
-                        <div class="item-actions">
-                            <button class="btn btn-edit" onclick="editItem(${index})">✏️ Edit</button>
-                            <button class="btn btn-delete" onclick="deleteItem(${index})">🗑️ Delete</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        document.getElementById('adminItemsGrid').innerHTML = html;
-    }
-
-    function openItemModal() {
-        currentEditItem = null;
-        document.getElementById('itemModalTitle').textContent = 'Add New Item';
-        document.getElementById('itemForm').reset();
-        document.getElementById('imagePreview').style.display = 'none';
-        document.getElementById('imageUrl').style.display = 'none';
-        currentImageUrl = null;
-        document.getElementById('itemModal').classList.add('show');
-    }
-
-    async function editItem(index) {
-        currentEditItem = index;
-        
-        const snapshot = await database.ref(`menu/${currentAdminCategory}`).once('value');
-        const categoryData = snapshot.val();
-        const item = categoryData.items[index];
-        
-        document.getElementById('itemModalTitle').textContent = 'Edit Item';
-        document.getElementById('itemName').value = item.name;
-        document.getElementById('itemPrice').value = item.price;
-        document.getElementById('itemDescription').value = item.description || '';
-        
-        if (item.image) {
-            currentImageUrl = item.image;
-            document.getElementById('imagePreview').src = item.image;
-            document.getElementById('imagePreview').style.display = 'block';
-        }
-        
-        document.getElementById('itemModal').classList.add('show');
-    }
-
-    async function deleteItem(index) {
-        if (!confirm('Delete this item?')) return;
-        
-        try {
-            const snapshot = await database.ref(`menu/${currentAdminCategory}`).once('value');
-            const categoryData = snapshot.val();
-            categoryData.items.splice(index, 1);
-            
-            await database.ref(`menu/${currentAdminCategory}`).set(categoryData);
-            
-            // Clear caches after deletion
-            clearMenuCache();
-            clearAdminCache();
-            
-            showSuccess('Item deleted!');
-            loadAdminItems(currentAdminCategory);
-            loadAdminCategories();
-            loadMenuOptimized();
-        } catch (error) {
-            console.error('Error deleting item:', error);
-            alert('Error deleting item');
-        }
-    }
-
-    function handleImageUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            currentImageUrl = e.target.result;
-            document.getElementById('imagePreview').src = e.target.result;
-            document.getElementById('imagePreview').style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function toggleUrlInput() {
-        const urlInput = document.getElementById('imageUrl');
-        urlInput.style.display = urlInput.style.display === 'none' ? 'block' : 'none';
-    }
-
-    function handleUrlInput(event) {
-        const url = event.target.value;
-        if (url) {
-            currentImageUrl = url;
-            document.getElementById('imagePreview').src = url;
-            document.getElementById('imagePreview').style.display = 'block';
-        }
-    }
-
-    // ==========================================
-    // UPDATED ITEM FORM SUBMIT HANDLER
-    // ==========================================
-    document.getElementById('itemForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        if (!currentImageUrl) {
-            alert('Please add an image');
-            return;
-        }
-        
-        const item = {
-            name: document.getElementById('itemName').value,
-            price: parseFloat(document.getElementById('itemPrice').value),
-            description: document.getElementById('itemDescription').value,
-            image: currentImageUrl
-        };
-        
-        try {
-            const snapshot = await database.ref(`menu/${currentAdminCategory}`).once('value');
-            const categoryData = snapshot.val() || { 
-                title: categoryConfig[currentAdminCategory].title,
-                items: [] 
+            const item = {
+                name: document.getElementById('itemName').value,
+                price: parseFloat(document.getElementById('itemPrice').value),
+                description: document.getElementById('itemDescription').value,
+                image: imageUrl
             };
             
-            if (currentEditItem !== null) {
-                categoryData.items[currentEditItem] = item;
-            } else {
-                categoryData.items.push(item);
-            }
-            
-            await database.ref(`menu/${currentAdminCategory}`).set(categoryData);
-            
-            // ✅ CRITICAL: Clear caches after update
-            clearMenuCache();
-            clearAdminCache();
-            
-            closeItemModal();
-            showSuccess(currentEditItem !== null ? 'Item updated!' : 'Item added!');
-            loadAdminItems(currentAdminCategory);
-            loadAdminCategories();
-            
-            // Force reload from Firebase
-            await loadMenuOptimized();
-        } catch (error) {
-            console.error('Error saving item:', error);
-            alert('Error saving item');
-        }
-    });
-
-    function closeItemModal() {
-        document.getElementById('itemModal').classList.remove('show');
-        document.getElementById('itemForm').reset();
-        currentEditItem = null;
-        currentImageUrl = null;
-    }
-
-    function showSuccess(message) {
-        const msg = document.getElementById('successMessage');
-        msg.textContent = `✅ ${message}`;
-        msg.classList.add('show');
-        setTimeout(() => msg.classList.remove('show'), 3000);
-    }
-
-    function logoutAdmin() {
-        if (confirm('Logout?')) {
-            auth.signOut();
-            clearAdminCache();
-            isAdminLoggedIn = false;
-            closeAdminModal();
-        }
-    }
-
-    // ==========================================
-    // IMAGE MIGRATION HELPER (Optional)
-    // ==========================================
-    async function analyzeImageStorage() {
-        const snapshot = await database.ref('menu').once('value');
-        const menu = snapshot.val();
-        
-        let base64Count = 0;
-        let urlCount = 0;
-        let totalBase64Size = 0;
-        
-        for (const category in menu) {
-            const items = menu[category]?.items || [];
-            for (const item of items) {
-                if (item.image) {
-                    if (item.image.startsWith('data:image')) {
-                        base64Count++;
-                        totalBase64Size += item.image.length;
-                    } else {
-                        urlCount++;
-                    }
+            try {
+                const snapshot = await database.ref(`menu/${currentAdminCategory}`).once('value');
+                const categoryData = snapshot.val() || { 
+                    title: categoryConfig[currentAdminCategory].title,
+                    items: [] 
+                };
+                
+                if (currentEditItem !== null) {
+                    categoryData.items[currentEditItem] = item;
+                } else {
+                    categoryData.items.push(item);
                 }
+                
+                await database.ref(`menu/${currentAdminCategory}`).set(categoryData);
+                
+                // 🔥 INCREMENT VERSION to force all users to refresh
+                await incrementMenuVersion();
+                
+                closeItemModal();
+                showSuccess(currentEditItem !== null ? 'Item updated!' : 'Item added!');
+                loadAdminItems(currentAdminCategory);
+                loadAdminCategories();
+                
+                await loadMenuOptimized();
+            } catch (error) {
+                console.error('Error saving item:', error);
+                alert('Error saving item');
             }
         }
-        
-        console.log(`
-            📊 IMAGE STORAGE ANALYSIS:
-            ========================
-            Base64 images (in database): ${base64Count}
-            URL images (external): ${urlCount}
-            Total base64 size: ${(totalBase64Size / 1024 / 1024).toFixed(2)} MB
-            
-            ${base64Count > 0 ? '⚠️ WARNING: Base64 images cause high bandwidth!' : '✅ All images use URLs'}
-        `);
-        
-        return { base64Count, urlCount, totalBase64Size };
-    }
 
-    // ==========================================
-    // INITIALIZATION
-    // ==========================================
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM loaded, initializing with optimized caching...');
-        loadMenuOptimized();
-        updateCart();
-    });
-</script>
+        function closeItemModal() {
+            document.getElementById('itemModal').classList.remove('show');
+            document.getElementById('itemForm').reset();
+            currentEditItem = null;
+        }
+
+        function showSuccess(message) {
+            const msg = document.getElementById('successMessage');
+            msg.textContent = `✅ ${message}`;
+            msg.classList.add('show');
+            setTimeout(() => msg.classList.remove('show'), 3000);
+        }
+
+        function logoutAdmin() {
+            if (confirm('Logout?')) {
+                auth.signOut();
+                isAdminLoggedIn = false;
+                closeAdminModal();
+            }
+        }
+
+        // ==========================================
+        // INITIALIZE MENU VERSION (One-time setup)
+        // ==========================================
+        async function initializeMenuVersion() {
+            try {
+                const snapshot = await database.ref('menuVersion').once('value');
+                if (!snapshot.exists()) {
+                    await database.ref('menuVersion').set(1);
+                    console.log('✅ Menu version initialized to 1');
+                }
+            } catch (error) {
+                console.error('Error initializing menu version:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Aleco\'s Restaurant - Bandwidth Optimized');
+            await initializeMenuVersion(); // This creates menuVersion if it doesn't exist
+            loadMenuOptimized();
+            updateCart();
+        });
+    </script>
 </body>
 </html>
