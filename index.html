@@ -1917,30 +1917,68 @@
             document.getElementById('errorMessage').classList.remove('show');
         }
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-            
-            errorMessage.classList.remove('show');
-            
-            try {
-                const email = `${username}@alecos.admin`;
-                await auth.signInWithEmailAndPassword(email, password);
-                
-                isAdminLoggedIn = true;
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminDashboard').classList.add('show');
-                
-                loadAdminCategories();
-            } catch (error) {
-                console.error('Login error:', error);
-                errorMessage.textContent = '❌ Invalid username or password';
-                errorMessage.classList.add('show');
-            }
-        });
+        // ============================================
+// 🔒 SECURE LOGIN WITH BRUTE-FORCE PROTECTION
+// ============================================
+let loginAttempts = 0;
+let lockoutUntil = null;
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('errorMessage');
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    errorMessage.classList.remove('show');
+    
+    // Check if locked out
+    if (lockoutUntil && Date.now() < lockoutUntil) {
+        const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
+        errorMessage.textContent = `🔒 Too many attempts. Try again in ${remainingSeconds} seconds`;
+        errorMessage.classList.add('show');
+        return;
+    }
+    
+    // Disable button during login attempt
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging in...';
+    
+    try {
+        const email = `${username}@alecos.admin`;
+        await auth.signInWithEmailAndPassword(email, password);
+        
+        // ✅ SUCCESS - reset security counters
+        loginAttempts = 0;
+        lockoutUntil = null;
+        
+        isAdminLoggedIn = true;
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminDashboard').classList.add('show');
+        
+        loadAdminCategories();
+        
+    } catch (error) {
+        // ❌ FAILED - increment attempts
+        loginAttempts++;
+        
+        console.error('Login error:', error);
+        
+        if (loginAttempts >= 3) {
+            // Lock out for 60 seconds
+            lockoutUntil = Date.now() + 60000;
+            errorMessage.textContent = '🔒 Too many failed attempts. Account locked for 60 seconds.';
+        } else {
+            errorMessage.textContent = `❌ Invalid credentials (${3 - loginAttempts} attempts remaining)`;
+        }
+        errorMessage.classList.add('show');
+        
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Login to Dashboard';
+    }
+});
 
         async function loadAdminCategories() {
             const grid = document.getElementById('adminCategoriesGrid');
