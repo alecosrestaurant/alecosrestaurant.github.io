@@ -2442,73 +2442,93 @@
         }
 
         async function submitCategoryForm(e) {
-            e.preventDefault();
+    e.preventDefault();
+    
+    const categoryId = document.getElementById('categoryId').value.toLowerCase().trim();
+    const categoryName = document.getElementById('categoryName').value.trim();
+    const categoryIcon = document.getElementById('categoryIcon').value.trim() || '📁'; // Default icon if empty
+    
+    // Validation for new categories only
+    if (!currentEditCategory && !/^[a-z]+$/.test(categoryId)) {
+        alert('Category ID must be lowercase letters only, no spaces!');
+        return;
+    }
+    
+    if (!currentEditCategory && menuCategories[categoryId]) {
+        alert(`Category "${categoryId}" already exists! Choose a different ID.`);
+        return;
+    }
+    
+    try {
+        if (currentEditCategory) {
+            // Edit existing category
+            const oldId = currentEditCategory;
             
-            const categoryId = document.getElementById('categoryId').value.toLowerCase().trim();
-            const categoryName = document.getElementById('categoryName').value.trim();
-            const categoryIcon = document.getElementById('categoryIcon').value.trim() || '📁'; // Default icon if empty
-            
-            // Validation for new categories only
-            if (!currentEditCategory && !/^[a-z]+$/.test(categoryId)) {
-                alert('Category ID must be lowercase letters only, no spaces!');
-                return;
-            }
-            
-            if (!currentEditCategory && menuCategories[categoryId]) {
-                alert(`Category "${categoryId}" already exists! Choose a different ID.`);
-                return;
-            }
-            
-            try {
-                if (currentEditCategory) {
-                    // Edit existing category
-                    const oldId = currentEditCategory;
-                    
-                    // Update in categoryConfig if it exists there
-                    if (categoryConfig[oldId]) {
-                        categoryConfig[oldId] = {
-                            name: categoryName,
-                            title: categoryName.toUpperCase()
-                        };
-                        if (categoryIcon) {
-                            categoryConfig[oldId].icon = categoryIcon;
-                        }
-                    }
-                    
-                    // Update Firebase
-                    const snapshot = await database.ref(`menu/${oldId}`).once('value');
-                    const categoryData = snapshot.val();
-                    if (categoryData) {
-                        categoryData.title = categoryName.toUpperCase();
-                        categoryData.icon = categoryIcon; // Store icon in Firebase
-                        await database.ref(`menu/${oldId}`).set(categoryData);
-                    }
-                    
-                    showSuccess('Category updated!');
-                } else {
-                    // Create new category in Firebase with icon
-                    const newCategory = {
-                        title: categoryName.toUpperCase(),
-                        icon: categoryIcon, // Store icon in Firebase
-                        items: []
-                    };
-                    
-                    await database.ref(`menu/${categoryId}`).set(newCategory);
-                    console.log(`✅ Category created: ${categoryId}`);
-                    showSuccess('Category added!');
+            // Update in categoryConfig if it exists there
+            if (categoryConfig[oldId]) {
+                categoryConfig[oldId] = {
+                    name: categoryName,
+                    title: categoryName.toUpperCase()
+                };
+                if (categoryIcon) {
+                    categoryConfig[oldId].icon = categoryIcon;
                 }
-                
-                // Increment version
-                await incrementMenuVersion();
-                
-                closeCategoryModal();
-                await loadMenuOptimized(); // Reload menu to show new category
-                
-            } catch (error) {
-                console.error('Error saving category:', error);
-                alert('Error saving category: ' + error.message);
             }
+            
+            // Update Firebase
+            const snapshot = await database.ref(`menu/${oldId}`).once('value');
+            let categoryData = snapshot.val();
+            if (categoryData) {
+                categoryData.title = categoryName.toUpperCase();
+                categoryData.icon = categoryIcon; // Store icon in Firebase
+                await database.ref(`menu/${oldId}`).set(categoryData);
+                
+                // Also update menuCategories in memory
+                menuCategories[oldId] = categoryData;
+                
+                // If this is the currently selected category in admin, update the title
+                if (currentAdminCategory === oldId) {
+                    document.getElementById('adminCategoryTitle').textContent = categoryName.toUpperCase();
+                }
+            }
+            
+            showSuccess('Category updated!');
+        } else {
+            // Create new category in Firebase with icon
+            const newCategory = {
+                title: categoryName.toUpperCase(),
+                icon: categoryIcon, // Store icon in Firebase
+                items: []
+            };
+            
+            await database.ref(`menu/${categoryId}`).set(newCategory);
+            
+            // Add to menuCategories in memory
+            menuCategories[categoryId] = newCategory;
+            
+            console.log(`✅ Category created: ${categoryId}`);
+            showSuccess('Category added!');
         }
+        
+        // Increment version
+        await incrementMenuVersion();
+        
+        closeCategoryModal();
+        
+        // Re-render everything
+        renderCategoryPills();
+        renderAdminCategories(menuCategories);
+        
+        // If editing and it's the selected category, reload items
+        if (currentEditCategory && currentAdminCategory === currentEditCategory) {
+            loadAdminItems(currentEditCategory);
+        }
+        
+    } catch (error) {
+        console.error('Error saving category:', error);
+        alert('Error saving category: ' + error.message);
+    }
+}
 
         async function deleteCategory(categoryId, event) {
             if (event) {
