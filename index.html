@@ -1672,15 +1672,15 @@
 
         // Category configuration - only default categories with fixed order
         const categoryConfig = {
-            'sandwiches': { name: 'Sandwiches', icon: '🥪', title: 'SANDWICHES' },
-            'crispy platters': { name: 'Crispy Platters', icon: '🍗', title: 'CRISPY PLATTERS' },
-            'platters': { name: 'Platters', icon: '🍽️', title: 'PLATTERS' },
-            'tenders': { name: 'Tenders', icon: '🍖', title: 'TENDERS' },
             'salads': { name: 'Salads', icon: '🥗', title: 'SALADS' },
+            'platters': { name: 'Platters', icon: '🍽️', title: 'PLATTERS' },
+            'crispy platters': { name: 'Crispy Platters', icon: '🍗', title: 'CRISPY PLATTERS' },
+            'sandwiches': { name: 'Sandwiches', icon: '🥪', title: 'SANDWICHES' },
+            'tenders': { name: 'Tenders', icon: '🍖', title: 'TENDERS' },
             'breakfast': { name: 'Breakfast', icon: '🍳', title: 'BREAKFAST' },
             'fresh juice': { name: 'Fresh Juice', icon: '🧃', title: 'FRESH JUICE' },
             'soft drinks': { name: 'Soft Drinks', icon: '🥤', title: 'SOFT DRINKS' },
-            'drinks': { name: 'Hot Drinks', icon: '☕', title: 'DRINKS' },
+            'drinks': { name: 'Drinks', icon: '☕', title: 'DRINKS' },
             'arguileh': { name: 'Arguileh', icon: '💨', title: 'ARGUILEH' },
             'sauces': { name: 'Sauces', icon: '🌶️', title: 'SAUCES' },
             'desserts': { name: 'Desserts', icon: '🍰', title: 'DESSERTS' },
@@ -1819,48 +1819,51 @@
         }
 
         function renderCategoryPills() {
-            const pillsContainer = document.getElementById('categoryPills');
-            if (!pillsContainer) return;
-            
-            let pillsHTML = '';
-            
-            // First, show all categories from categoryConfig in order
-            Object.keys(categoryConfig).forEach((categoryId, index) => {
-                if (menuCategories[categoryId]) {
-                    const config = categoryConfig[categoryId];
-                    const displayText = config.icon ? `${config.icon} ${config.name}` : config.name;
-                    pillsHTML += `
-                        <div class="category-pill" onclick="showCategory('${categoryId}')">
-                            ${displayText}
-                        </div>
-                    `;
-                }
-            });
-            
-            // Then, show any additional categories (added via admin) at the end
-            Object.keys(menuCategories).forEach(categoryId => {
-                // If this category is NOT in categoryConfig, it's a custom one
-                if (!categoryConfig[categoryId]) {
-                    // Get icon from Firebase or use default
-                    const categoryData = menuCategories[categoryId];
-                    const icon = categoryData.icon || '📁';
-                    const displayName = categoryData.title || categoryId;
-                    pillsHTML += `
-                        <div class="category-pill" onclick="showCategory('${categoryId}')">
-                            ${icon} ${displayName}
-                        </div>
-                    `;
-                }
-            });
-            
-            pillsContainer.innerHTML = pillsHTML;
-            
-            // Make first pill active
-            const firstPill = pillsContainer.querySelector('.category-pill');
-            if (firstPill) {
-                firstPill.classList.add('active');
-            }
+    const pillsContainer = document.getElementById('categoryPills');
+    if (!pillsContainer) return;
+    
+    let pillsHTML = '';
+    let firstCategoryId = null;
+    
+    // First, show all categories from categoryConfig in order
+    Object.keys(categoryConfig).forEach((categoryId, index) => {
+        if (menuCategories[categoryId]) {
+            const config = categoryConfig[categoryId];
+            const displayText = config.icon ? `${config.icon} ${config.name}` : config.name;
+            // Mark the first one as active
+            const isActive = index === 0 ? 'active' : '';
+            if (index === 0) firstCategoryId = categoryId;
+            pillsHTML += `
+                <div class="category-pill ${isActive}" onclick="showCategory('${categoryId}')">
+                    ${displayText}
+                </div>
+            `;
         }
+    });
+    
+    // Then, show any additional categories (added via admin) at the end
+    Object.keys(menuCategories).forEach(categoryId => {
+        // If this category is NOT in categoryConfig, it's a custom one
+        if (!categoryConfig[categoryId]) {
+            // Get icon from Firebase or use default
+            const categoryData = menuCategories[categoryId];
+            const icon = categoryData.icon || '📁';
+            const displayName = categoryData.title || categoryId;
+            pillsHTML += `
+                <div class="category-pill" onclick="showCategory('${categoryId}')">
+                    ${icon} ${displayName}
+                </div>
+            `;
+        }
+    });
+    
+    pillsContainer.innerHTML = pillsHTML;
+    
+    // Show the first category by default
+    if (firstCategoryId) {
+        showCategory(firstCategoryId, true);
+    }
+}
 
         function showCategory(categoryId, autoLoad = false) {
             if (!autoLoad && event && event.target) {
