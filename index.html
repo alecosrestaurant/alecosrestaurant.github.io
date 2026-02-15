@@ -863,7 +863,7 @@
             font-size: 0.95rem;
         }
 
-        input {
+        input, textarea {
             width: 100%;
             padding: 0.9rem 1rem;
             background: rgba(10, 10, 10, 0.7);
@@ -874,7 +874,12 @@
             transition: all 0.3s;
         }
 
-        input:focus {
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus {
             outline: none;
             border-color: var(--accent);
             background: rgba(10, 10, 10, 0.9);
@@ -993,11 +998,36 @@
             font-weight: bold;
             color: white;
             margin-bottom: 0.3rem;
+            font-size: 1.1rem;
         }
 
         .category-count {
             font-size: 0.85rem;
             color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .category-actions .btn {
+            flex: 1;
+            padding: 0.5rem;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .btn-edit-category {
+            background: var(--accent);
+            color: var(--primary);
+        }
+
+        .btn-delete-category {
+            background: var(--red);
+            color: white;
         }
 
         .items-section {
@@ -1059,6 +1089,7 @@
         .item-actions {
             display: flex;
             gap: 0.5rem;
+            margin-top: 1rem;
         }
 
         .btn-edit {
@@ -1481,12 +1512,20 @@
                 </div>
                 <button class="btn btn-logout" onclick="logoutAdmin()">🚪 Logout</button>
             </div>
+            
+            <!-- Categories section with Add Category button -->
             <div style="margin-bottom: 2rem;">
-                <h2 class="section-title">📂 Menu Categories</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2 class="section-title" style="margin-bottom: 0;">📂 Menu Categories</h2>
+                    <button class="btn btn-add-item" onclick="openAddCategoryModal()" style="background: var(--accent); width: auto;">
+                        ➕ Add Category
+                    </button>
+                </div>
                 <div class="categories-grid" id="adminCategoriesGrid">
                     <div class="loading">Loading...</div>
                 </div>
             </div>
+            
             <div class="items-section">
                 <div class="items-header">
                     <h2 class="section-title" id="adminCategoryTitle">Select a Category</h2>
@@ -1497,6 +1536,40 @@
                         <div class="empty-state-icon">👈</div>
                         <p>Select a category to manage items</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Management Modal (Add/Edit) -->
+    <div class="item-modal" id="categoryModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="categoryModalTitle">Add New Category</h3>
+                <button class="close-modal" onclick="closeCategoryModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <div class="form-group">
+                        <label>Category ID * (lowercase, no spaces)</label>
+                        <input type="text" class="form-input" id="categoryId" placeholder="e.g., breakfast" required pattern="[a-z]+" title="Only lowercase letters, no spaces">
+                        <small style="color: var(--text-light); font-size: 0.85rem;">Example: breakfast, lunch, appetizers</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Category Display Name *</label>
+                        <input type="text" class="form-input" id="categoryName" placeholder="e.g., BREAKFAST" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Category Icon (optional - leave empty for no icon)</label>
+                        <input type="text" class="form-input" id="categoryIcon" placeholder="e.g., 🍳 or leave empty">
+                        <small style="color: var(--text-light); font-size: 0.85rem;">Optional: Add an emoji like 🍳 🥐 🍕 🌮</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeCategoryModal()">Cancel</button>
+                    <button type="submit" class="btn btn-submit" onclick="submitCategoryForm(event)">💾 Save Category</button>
                 </div>
             </div>
         </div>
@@ -1595,7 +1668,9 @@
         let isAdminLoggedIn = false;
         let currentAdminCategory = null;
         let currentEditItem = null;
+        let currentEditCategory = null; // For category editing
 
+        // Category configuration - now icons are optional
         const categoryConfig = {
             'salads': { name: 'Salads', icon: '🥗', title: 'SALADS' },
             'platters': { name: 'Platters', icon: '🍽️', title: 'PLATTERS' },
@@ -1640,7 +1715,7 @@
                     return; // DONE! No Firebase download needed!
                 }
                 
-                // 4. Version mismatch → download full menu (35MB)
+                // 4. Version mismatch → download full menu
                 console.log('⚠️ Version mismatch - downloading fresh menu...');
                 const snapshot = await database.ref('menu').once('value');
                 menuCategories = snapshot.val();
@@ -1721,11 +1796,13 @@
             
             let pillsHTML = '';
             Object.keys(menuCategories).forEach((categoryId, index) => {
-                const config = categoryConfig[categoryId] || { name: categoryId, icon: '🍽️' };
+                const config = categoryConfig[categoryId] || { name: categoryId };
                 const isActive = index === 0 ? 'active' : '';
+                // Show icon only if it exists
+                const displayText = config.icon ? `${config.icon} ${config.name}` : config.name;
                 pillsHTML += `
                     <div class="category-pill ${isActive}" onclick="showCategory('${categoryId}')">
-                        ${config.icon} ${config.name}
+                        ${displayText}
                     </div>
                 `;
             });
@@ -1918,67 +1995,67 @@
         }
 
         // ============================================
-// 🔒 SECURE LOGIN WITH BRUTE-FORCE PROTECTION
-// ============================================
-let loginAttempts = 0;
-let lockoutUntil = null;
+        // 🔒 SECURE LOGIN WITH BRUTE-FORCE PROTECTION
+        // ============================================
+        let loginAttempts = 0;
+        let lockoutUntil = null;
 
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    const errorMessage = document.getElementById('errorMessage');
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    
-    errorMessage.classList.remove('show');
-    
-    // Check if locked out
-    if (lockoutUntil && Date.now() < lockoutUntil) {
-        const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
-        errorMessage.textContent = `🔒 Too many attempts. Try again in ${remainingSeconds} seconds`;
-        errorMessage.classList.add('show');
-        return;
-    }
-    
-    // Disable button during login attempt
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Logging in...';
-    
-    try {
-        const email = `${username}@alecos.admin`;
-        await auth.signInWithEmailAndPassword(email, password);
-        
-        // ✅ SUCCESS - reset security counters
-        loginAttempts = 0;
-        lockoutUntil = null;
-        
-        isAdminLoggedIn = true;
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('adminDashboard').classList.add('show');
-        
-        loadAdminCategories();
-        
-    } catch (error) {
-        // ❌ FAILED - increment attempts
-        loginAttempts++;
-        
-        console.error('Login error:', error);
-        
-        if (loginAttempts >= 3) {
-            // Lock out for 60 seconds
-            lockoutUntil = Date.now() + 60000;
-            errorMessage.textContent = '🔒 Too many failed attempts. Account locked for 60 seconds.';
-        } else {
-            errorMessage.textContent = `❌ Invalid credentials (${3 - loginAttempts} attempts remaining)`;
-        }
-        errorMessage.classList.add('show');
-        
-        // Re-enable button
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Login to Dashboard';
-    }
-});
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            
+            errorMessage.classList.remove('show');
+            
+            // Check if locked out
+            if (lockoutUntil && Date.now() < lockoutUntil) {
+                const remainingSeconds = Math.ceil((lockoutUntil - Date.now()) / 1000);
+                errorMessage.textContent = `🔒 Too many attempts. Try again in ${remainingSeconds} seconds`;
+                errorMessage.classList.add('show');
+                return;
+            }
+            
+            // Disable button during login attempt
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Logging in...';
+            
+            try {
+                const email = `${username}@alecos.admin`;
+                await auth.signInWithEmailAndPassword(email, password);
+                
+                // ✅ SUCCESS - reset security counters
+                loginAttempts = 0;
+                lockoutUntil = null;
+                
+                isAdminLoggedIn = true;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminDashboard').classList.add('show');
+                
+                loadAdminCategories();
+                
+            } catch (error) {
+                // ❌ FAILED - increment attempts
+                loginAttempts++;
+                
+                console.error('Login error:', error);
+                
+                if (loginAttempts >= 3) {
+                    // Lock out for 60 seconds
+                    lockoutUntil = Date.now() + 60000;
+                    errorMessage.textContent = '🔒 Too many failed attempts. Account locked for 60 seconds.';
+                } else {
+                    errorMessage.textContent = `❌ Invalid credentials (${3 - loginAttempts} attempts remaining)`;
+                }
+                errorMessage.classList.add('show');
+                
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Login to Dashboard';
+            }
+        });
 
         async function loadAdminCategories() {
             const grid = document.getElementById('adminCategoriesGrid');
@@ -1994,17 +2071,33 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             }
         }
 
+        // Updated renderAdminCategories with Edit button and optional icon display
         function renderAdminCategories(menuData) {
             let html = '';
             for (const [categoryId, config] of Object.entries(categoryConfig)) {
                 const categoryData = menuData[categoryId];
                 const itemCount = categoryData?.items?.length || 0;
                 
+                // Show icon only if it exists
+                const iconHtml = config.icon ? `<div class="category-icon">${config.icon}</div>` : '';
+                
                 html += `
                     <div class="category-card" onclick="selectAdminCategory('${categoryId}')">
-                        <div class="category-icon">${config.icon}</div>
+                        ${iconHtml}
                         <div class="category-name">${config.name}</div>
                         <div class="category-count">${itemCount} items</div>
+                        <div class="category-actions">
+                            <button class="btn btn-edit-category" 
+                                    onclick="editCategory('${categoryId}', event)" 
+                                    style="padding: 0.5rem; font-size: 0.85rem;">
+                                ✏️ Edit
+                            </button>
+                            <button class="btn btn-delete-category" 
+                                    onclick="deleteCategory('${categoryId}', event)" 
+                                    style="padding: 0.5rem; font-size: 0.85rem;">
+                                🗑️ Delete
+                            </button>
+                        </div>
                     </div>
                 `;
             }
@@ -2203,6 +2296,168 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
                 auth.signOut();
                 isAdminLoggedIn = false;
                 closeAdminModal();
+            }
+        }
+
+        // ==========================================
+        // CATEGORY MANAGEMENT FUNCTIONS
+        // ==========================================
+
+        function openAddCategoryModal() {
+            currentEditCategory = null;
+            document.getElementById('categoryModalTitle').textContent = 'Add New Category';
+            document.getElementById('categoryForm').reset();
+            document.getElementById('categoryModal').classList.add('show');
+        }
+
+        function editCategory(categoryId, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            
+            currentEditCategory = categoryId;
+            const config = categoryConfig[categoryId];
+            
+            document.getElementById('categoryModalTitle').textContent = 'Edit Category';
+            document.getElementById('categoryId').value = categoryId;
+            document.getElementById('categoryId').disabled = true; // Can't change ID
+            document.getElementById('categoryName').value = config.name;
+            document.getElementById('categoryIcon').value = config.icon || '';
+            
+            document.getElementById('categoryModal').classList.add('show');
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('show');
+            document.getElementById('categoryForm').reset();
+            document.getElementById('categoryId').disabled = false;
+            currentEditCategory = null;
+        }
+
+        async function submitCategoryForm(e) {
+            e.preventDefault();
+            
+            const categoryId = document.getElementById('categoryId').value.toLowerCase().trim();
+            const categoryName = document.getElementById('categoryName').value.trim();
+            const categoryIcon = document.getElementById('categoryIcon').value.trim() || null; // Allow empty icon
+            
+            // Validation for new categories only
+            if (!currentEditCategory && !/^[a-z]+$/.test(categoryId)) {
+                alert('Category ID must be lowercase letters only, no spaces!');
+                return;
+            }
+            
+            if (!currentEditCategory && categoryConfig[categoryId]) {
+                alert(`Category "${categoryId}" already exists! Choose a different ID.`);
+                return;
+            }
+            
+            try {
+                if (currentEditCategory) {
+                    // Edit existing category
+                    const oldId = currentEditCategory;
+                    
+                    // Update categoryConfig
+                    categoryConfig[oldId] = {
+                        name: categoryName,
+                        title: categoryName.toUpperCase()
+                    };
+                    
+                    // Only add icon if provided
+                    if (categoryIcon) {
+                        categoryConfig[oldId].icon = categoryIcon;
+                    }
+                    
+                    // Update Firebase title if needed
+                    const snapshot = await database.ref(`menu/${oldId}`).once('value');
+                    const categoryData = snapshot.val();
+                    if (categoryData) {
+                        categoryData.title = categoryName.toUpperCase();
+                        await database.ref(`menu/${oldId}`).set(categoryData);
+                    }
+                    
+                    showSuccess('Category updated!');
+                } else {
+                    // Add new category
+                    categoryConfig[categoryId] = {
+                        name: categoryName,
+                        title: categoryName.toUpperCase()
+                    };
+                    
+                    // Only add icon if provided
+                    if (categoryIcon) {
+                        categoryConfig[categoryId].icon = categoryIcon;
+                    }
+                    
+                    // Create empty category in Firebase
+                    const newCategory = {
+                        title: categoryName.toUpperCase(),
+                        items: []
+                    };
+                    
+                    await database.ref(`menu/${categoryId}`).set(newCategory);
+                    showSuccess('Category added!');
+                }
+                
+                // Increment version
+                await incrementMenuVersion();
+                
+                closeCategoryModal();
+                loadAdminCategories();
+                await loadMenuOptimized();
+                
+            } catch (error) {
+                console.error('Error saving category:', error);
+                alert('Error saving category: ' + error.message);
+            }
+        }
+
+        async function deleteCategory(categoryId, event) {
+            if (event) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+            
+            const categoryName = categoryConfig[categoryId].name;
+            const confirmed = confirm(`⚠️ Delete entire "${categoryName}" category?\n\nThis will delete ALL items in this category!\n\nThis action cannot be undone.`);
+            
+            if (!confirmed) return;
+            
+            // Double confirmation
+            const doubleConfirm = confirm(`Are you ABSOLUTELY SURE you want to delete "${categoryName}"?`);
+            if (!doubleConfirm) return;
+            
+            try {
+                // Remove from Firebase
+                await database.ref(`menu/${categoryId}`).remove();
+                
+                // Remove from categoryConfig
+                delete categoryConfig[categoryId];
+                
+                // If this was the selected category, clear selection
+                if (currentAdminCategory === categoryId) {
+                    currentAdminCategory = null;
+                    document.getElementById('adminCategoryTitle').textContent = 'Select a Category';
+                    document.getElementById('adminAddItemBtn').style.display = 'none';
+                    document.getElementById('adminItemsGrid').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">👈</div>
+                            <p>Select a category to manage items</p>
+                        </div>
+                    `;
+                }
+                
+                // Increment version
+                await incrementMenuVersion();
+                
+                showSuccess('Category deleted!');
+                loadAdminCategories();
+                await loadMenuOptimized();
+                
+            } catch (error) {
+                console.error('Error deleting category:', error);
+                alert('Error deleting category: ' + error.message);
             }
         }
 
