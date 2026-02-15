@@ -1765,11 +1765,18 @@
                 console.log('✅ Menu downloaded and cached');
                 
                 // 6. Render
-                renderCategoryPills();
-                const firstCategory = Object.keys(menuCategories)[0];
-                if (firstCategory) {
-                    showCategory(firstCategory, true);
-                }
+renderCategoryPills();
+// Use the first category from categoryConfig instead of Firebase order
+const firstCategoryFromConfig = Object.keys(categoryConfig).find(catId => menuCategories[catId]);
+if (firstCategoryFromConfig) {
+    showCategory(firstCategoryFromConfig, true);
+} else {
+    // Fallback to first category in Firebase if none from config exist
+    const firstCategory = Object.keys(menuCategories)[0];
+    if (firstCategory) {
+        showCategory(firstCategory, true);
+    }
+}
             } catch (error) {
                 console.error('Error loading menu:', error);
                 document.getElementById('menu-items-display').innerHTML = 
