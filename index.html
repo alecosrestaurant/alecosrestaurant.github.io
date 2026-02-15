@@ -2233,50 +2233,67 @@
         });
 
         async function submitItemForm(e) {
-            e.preventDefault();
-            
-            const imageUrl = document.getElementById('imageUrl').value;
-            if (!imageUrl) {
-                alert('Please enter an image URL');
-                return;
-            }
-            
-            const item = {
-                name: document.getElementById('itemName').value,
-                price: parseFloat(document.getElementById('itemPrice').value),
-                description: document.getElementById('itemDescription').value,
-                image: imageUrl
+    e.preventDefault();
+    
+    const imageUrl = document.getElementById('imageUrl').value;
+    if (!imageUrl) {
+        alert('Please enter an image URL');
+        return;
+    }
+    
+    const item = {
+        name: document.getElementById('itemName').value,
+        price: parseFloat(document.getElementById('itemPrice').value),
+        description: document.getElementById('itemDescription').value,
+        image: imageUrl
+    };
+    
+    try {
+        console.log(`Saving item to category: ${currentAdminCategory}`);
+        
+        const snapshot = await database.ref(`menu/${currentAdminCategory}`).once('value');
+        let categoryData = snapshot.val();
+        
+        // FIXED: Better error handling and initialization
+        if (!categoryData) {
+            console.log(`Category ${currentAdminCategory} doesn't exist, creating it`);
+            categoryData = { 
+                title: categoryConfig[currentAdminCategory]?.title || currentAdminCategory.toUpperCase(),
+                items: [] 
             };
-            
-            try {
-                const snapshot = await database.ref(`menu/${currentAdminCategory}`).once('value');
-                const categoryData = snapshot.val() || { 
-                    title: categoryConfig[currentAdminCategory].title,
-                    items: [] 
-                };
-                
-                if (currentEditItem !== null) {
-                    categoryData.items[currentEditItem] = item;
-                } else {
-                    categoryData.items.push(item);
-                }
-                
-                await database.ref(`menu/${currentAdminCategory}`).set(categoryData);
-                
-                // 🔥 INCREMENT VERSION to force all users to refresh
-                await incrementMenuVersion();
-                
-                closeItemModal();
-                showSuccess(currentEditItem !== null ? 'Item updated!' : 'Item added!');
-                loadAdminItems(currentAdminCategory);
-                loadAdminCategories();
-                
-                await loadMenuOptimized();
-            } catch (error) {
-                console.error('Error saving item:', error);
-                alert('Error saving item');
-            }
         }
+        
+        // Ensure items array exists
+        if (!categoryData.items) {
+            console.log('Items array missing, creating it');
+            categoryData.items = [];
+        }
+        
+        if (currentEditItem !== null) {
+            categoryData.items[currentEditItem] = item;
+            console.log('Updated existing item');
+        } else {
+            categoryData.items.push(item);
+            console.log('Added new item');
+        }
+        
+        await database.ref(`menu/${currentAdminCategory}`).set(categoryData);
+        console.log('Item saved successfully');
+        
+        // 🔥 INCREMENT VERSION to force all users to refresh
+        await incrementMenuVersion();
+        
+        closeItemModal();
+        showSuccess(currentEditItem !== null ? 'Item updated!' : 'Item added!');
+        loadAdminItems(currentAdminCategory);
+        loadAdminCategories();
+        
+        await loadMenuOptimized();
+    } catch (error) {
+        console.error('Error saving item:', error);
+        alert('Error saving item: ' + error.message);
+    }
+}
 
         function closeItemModal() {
             document.getElementById('itemModal').classList.remove('show');
@@ -2336,82 +2353,83 @@
         }
 
         async function submitCategoryForm(e) {
-            e.preventDefault();
+    e.preventDefault();
+    
+    const categoryId = document.getElementById('categoryId').value.toLowerCase().trim();
+    const categoryName = document.getElementById('categoryName').value.trim();
+    const categoryIcon = document.getElementById('categoryIcon').value.trim() || null; // Allow empty icon
+    
+    // Validation for new categories only
+    if (!currentEditCategory && !/^[a-z]+$/.test(categoryId)) {
+        alert('Category ID must be lowercase letters only, no spaces!');
+        return;
+    }
+    
+    if (!currentEditCategory && categoryConfig[categoryId]) {
+        alert(`Category "${categoryId}" already exists! Choose a different ID.`);
+        return;
+    }
+    
+    try {
+        if (currentEditCategory) {
+            // Edit existing category
+            const oldId = currentEditCategory;
             
-            const categoryId = document.getElementById('categoryId').value.toLowerCase().trim();
-            const categoryName = document.getElementById('categoryName').value.trim();
-            const categoryIcon = document.getElementById('categoryIcon').value.trim() || null; // Allow empty icon
+            // Update categoryConfig
+            categoryConfig[oldId] = {
+                name: categoryName,
+                title: categoryName.toUpperCase()
+            };
             
-            // Validation for new categories only
-            if (!currentEditCategory && !/^[a-z]+$/.test(categoryId)) {
-                alert('Category ID must be lowercase letters only, no spaces!');
-                return;
+            // Only add icon if provided
+            if (categoryIcon) {
+                categoryConfig[oldId].icon = categoryIcon;
             }
             
-            if (!currentEditCategory && categoryConfig[categoryId]) {
-                alert(`Category "${categoryId}" already exists! Choose a different ID.`);
-                return;
+            // Update Firebase title if needed
+            const snapshot = await database.ref(`menu/${oldId}`).once('value');
+            const categoryData = snapshot.val();
+            if (categoryData) {
+                categoryData.title = categoryName.toUpperCase();
+                await database.ref(`menu/${oldId}`).set(categoryData);
             }
             
-            try {
-                if (currentEditCategory) {
-                    // Edit existing category
-                    const oldId = currentEditCategory;
-                    
-                    // Update categoryConfig
-                    categoryConfig[oldId] = {
-                        name: categoryName,
-                        title: categoryName.toUpperCase()
-                    };
-                    
-                    // Only add icon if provided
-                    if (categoryIcon) {
-                        categoryConfig[oldId].icon = categoryIcon;
-                    }
-                    
-                    // Update Firebase title if needed
-                    const snapshot = await database.ref(`menu/${oldId}`).once('value');
-                    const categoryData = snapshot.val();
-                    if (categoryData) {
-                        categoryData.title = categoryName.toUpperCase();
-                        await database.ref(`menu/${oldId}`).set(categoryData);
-                    }
-                    
-                    showSuccess('Category updated!');
-                } else {
-                    // Add new category
-                    categoryConfig[categoryId] = {
-                        name: categoryName,
-                        title: categoryName.toUpperCase()
-                    };
-                    
-                    // Only add icon if provided
-                    if (categoryIcon) {
-                        categoryConfig[categoryId].icon = categoryIcon;
-                    }
-                    
-                    // Create empty category in Firebase
-                    const newCategory = {
-                        title: categoryName.toUpperCase(),
-                        items: []
-                    };
-                    
-                    await database.ref(`menu/${categoryId}`).set(newCategory);
-                    showSuccess('Category added!');
-                }
-                
-                // Increment version
-                await incrementMenuVersion();
-                
-                closeCategoryModal();
-                loadAdminCategories();
-                await loadMenuOptimized();
-                
-            } catch (error) {
-                console.error('Error saving category:', error);
-                alert('Error saving category: ' + error.message);
+            showSuccess('Category updated!');
+        } else {
+            // Add new category - FIXED: Properly initialize with items array
+            categoryConfig[categoryId] = {
+                name: categoryName,
+                title: categoryName.toUpperCase()
+            };
+            
+            // Only add icon if provided
+            if (categoryIcon) {
+                categoryConfig[categoryId].icon = categoryIcon;
             }
+            
+            // Create empty category in Firebase with proper structure
+            const newCategory = {
+                title: categoryName.toUpperCase(),
+                items: []  // This is CRITICAL - must be an array
+            };
+            
+            await database.ref(`menu/${categoryId}`).set(newCategory);
+            console.log(`✅ Category created: ${categoryId} with items array`);
+            showSuccess('Category added!');
         }
+        
+        // Increment version
+        await incrementMenuVersion();
+        
+        closeCategoryModal();
+        loadAdminCategories();
+        await loadMenuOptimized();
+        
+    } catch (error) {
+        console.error('Error saving category:', error);
+        alert('Error saving category: ' + error.message);
+    }
+}
 
         async function deleteCategory(categoryId, event) {
             if (event) {
