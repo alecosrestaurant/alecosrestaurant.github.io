@@ -1684,10 +1684,10 @@
                         <small style="color: var(--text-light); font-size: 0.85rem;">Example: breakfast, lunch, appetizers</small>
                     </div>
                     <div class="form-group">
-                        <label>Category Display Name *</label>
-                        <input type="text" class="form-input" id="categoryName" placeholder="e.g., Breakfast" required>
-                        <small style="color: var(--text-light); font-size: 0.85rem;">Will be automatically capitalized</small>
-                    </div>
+    <label>Category Display Name *</label>
+    <input type="text" class="form-input" id="categoryName" placeholder="e.g., Breakfast" required>
+    <small style="color: var(--text-light); font-size: 0.85rem;">Enter the name as you want it to appear (keeps your capitalization)</small>
+</div>
                     <div class="form-group">
                         <label>Category Icon (optional)</label>
                         <input type="text" class="form-input" id="categoryIcon" placeholder="e.g., 🍳 or leave empty">
@@ -2276,69 +2276,87 @@
             }
         }
 
-        // Updated renderAdminCategories with Edit button and optional icon display
-        function renderAdminCategories(menuData) {
-            let html = '';
-            // Show all categories from categoryConfig first
-            for (const [categoryId, config] of Object.entries(categoryConfig)) {
-                const categoryData = menuData[categoryId];
-                const itemCount = categoryData?.items?.length || 0;
-                
-                // Show icon only if it exists
-                const iconHtml = config.icon ? `<div class="category-icon">${config.icon}</div>` : '';
-                
-                html += `
-                    <div class="category-card" onclick="selectAdminCategory('${categoryId}')">
-                        ${iconHtml}
-                        <div class="category-name">${config.name}</div>
-                        <div class="category-count">${itemCount} items</div>
-                        <div class="category-actions">
-                            <button class="btn btn-edit-category" 
-                                    onclick="editCategory('${categoryId}', event)" 
-                                    style="padding: 0.5rem; font-size: 0.85rem;">
-                                ✏️ Edit
-                            </button>
-                            <button class="btn btn-delete-category" 
-                                    onclick="deleteCategory('${categoryId}', event)" 
-                                    style="padding: 0.5rem; font-size: 0.85rem;">
-                                🗑️ Delete
-                            </button>
-                        </div>
+        // Updated renderAdminCategories - shows ONLY categories that exist in Firebase
+function renderAdminCategories(menuData) {
+    let html = '';
+    
+    // First, get all categories that exist in Firebase
+    const firebaseCategories = Object.keys(menuData);
+    
+    if (firebaseCategories.length === 0) {
+        // No categories in Firebase at all
+        html = '<div class="empty-state"><p>No categories yet. Click "Add Category" to create one.</p></div>';
+        document.getElementById('adminCategoriesGrid').innerHTML = html;
+        return;
+    }
+    
+    // Sort categories: Show predefined ones first (from categoryConfig) in order, then custom ones
+    // But ONLY if they actually exist in Firebase!
+    
+    // First, show categories from categoryConfig that exist in Firebase (in config order)
+    for (const [categoryId, config] of Object.entries(categoryConfig)) {
+        if (menuData[categoryId]) { // Only show if it exists in Firebase
+            const categoryData = menuData[categoryId];
+            const itemCount = categoryData?.items?.length || 0;
+            
+            // Use icon from Firebase if available, otherwise from config
+            const icon = categoryData.icon || config.icon || '';
+            const iconHtml = icon ? `<div class="category-icon">${icon}</div>` : '';
+            
+            html += `
+                <div class="category-card" onclick="selectAdminCategory('${categoryId}')">
+                    ${iconHtml}
+                    <div class="category-name">${categoryData.title || config.name}</div>
+                    <div class="category-count">${itemCount} items</div>
+                    <div class="category-actions">
+                        <button class="btn btn-edit-category" 
+                                onclick="editCategory('${categoryId}', event)" 
+                                style="padding: 0.5rem; font-size: 0.85rem;">
+                            ✏️ Edit
+                        </button>
+                        <button class="btn btn-delete-category" 
+                                onclick="deleteCategory('${categoryId}', event)" 
+                                style="padding: 0.5rem; font-size: 0.85rem;">
+                            🗑️ Delete
+                        </button>
                     </div>
-                `;
-            }
-            
-            // Then show custom categories added via admin
-            for (const [categoryId, categoryData] of Object.entries(menuData)) {
-                if (!categoryConfig[categoryId]) {
-                    const itemCount = categoryData?.items?.length || 0;
-                    const icon = categoryData.icon || '';
-                    const name = categoryData.title || categoryId;
-                    
-                    html += `
-                        <div class="category-card" onclick="selectAdminCategory('${categoryId}')">
-                            ${icon ? `<div class="category-icon">${icon}</div>` : ''}
-                            <div class="category-name">${name}</div>
-                            <div class="category-count">${itemCount} items</div>
-                            <div class="category-actions">
-                                <button class="btn btn-edit-category" 
-                                        onclick="editCategory('${categoryId}', event)" 
-                                        style="padding: 0.5rem; font-size: 0.85rem;">
-                                    ✏️ Edit
-                                </button>
-                                <button class="btn btn-delete-category" 
-                                        onclick="deleteCategory('${categoryId}', event)" 
-                                        style="padding: 0.5rem; font-size: 0.85rem;">
-                                    🗑️ Delete
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-            
-            document.getElementById('adminCategoriesGrid').innerHTML = html;
+                </div>
+            `;
         }
+    }
+    
+    // Then show custom categories (not in categoryConfig) that exist in Firebase
+    for (const [categoryId, categoryData] of Object.entries(menuData)) {
+        if (!categoryConfig[categoryId]) { // Only if it's NOT in predefined config
+            const itemCount = categoryData?.items?.length || 0;
+            const icon = categoryData.icon || '';
+            const name = categoryData.title || categoryId;
+            const iconHtml = icon ? `<div class="category-icon">${icon}</div>` : '';
+            
+            html += `
+                <div class="category-card" onclick="selectAdminCategory('${categoryId}')">
+                    ${iconHtml}
+                    <div class="category-name">${name}</div>
+                    <div class="category-count">${itemCount} items</div>
+                    <div class="category-actions">
+                        <button class="btn btn-edit-category" 
+                                onclick="editCategory('${categoryId}', event)" 
+                                style="padding: 0.5rem; font-size: 0.85rem;">
+                            ✏️ Edit
+                        </button>
+                        <button class="btn btn-delete-category" 
+                                onclick="deleteCategory('${categoryId}', event)" 
+                                style="padding: 0.5rem; font-size: 0.85rem;">
+                            🗑️ Delete
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    document.getElementById('adminCategoriesGrid').innerHTML = html;
+}
 
         async function selectAdminCategory(categoryId) {
             currentAdminCategory = categoryId;
@@ -2601,105 +2619,106 @@
         }
 
         async function submitCategoryForm(e) {
-            e.preventDefault();
+    e.preventDefault();
+    
+    const categoryId = document.getElementById('categoryId').value.toLowerCase().trim();
+    const categoryName = document.getElementById('categoryName').value.trim(); // Keep original case
+    const categoryIcon = document.getElementById('categoryIcon').value.trim() || '';
+    
+    // Validation for new categories only
+    if (!currentEditCategory && !/^[a-z]+$/.test(categoryId)) {
+        alert('Category ID must be lowercase letters only, no spaces!');
+        return;
+    }
+    
+    if (!currentEditCategory && menuCategories[categoryId]) {
+        alert(`Category "${categoryId}" already exists! Choose a different ID.`);
+        return;
+    }
+    
+    try {
+        if (currentEditCategory) {
+            // Edit existing category
+            const oldId = currentEditCategory;
             
-            const categoryId = document.getElementById('categoryId').value.toLowerCase().trim();
-            const categoryName = document.getElementById('categoryName').value.trim();
-            const categoryIcon = document.getElementById('categoryIcon').value.trim() || ''; // Empty string if no icon
+            // Get existing category data
+            const snapshot = await database.ref(`menu/${oldId}`).once('value');
+            let categoryData = snapshot.val();
             
-            // Validation for new categories only
-            if (!currentEditCategory && !/^[a-z]+$/.test(categoryId)) {
-                alert('Category ID must be lowercase letters only, no spaces!');
-                return;
-            }
-            
-            if (!currentEditCategory && menuCategories[categoryId]) {
-                alert(`Category "${categoryId}" already exists! Choose a different ID.`);
-                return;
-            }
-            
-            try {
-                if (currentEditCategory) {
-                    // Edit existing category
-                    const oldId = currentEditCategory;
-                    
-                    // Update in categoryConfig if it exists there
-                    if (categoryConfig[oldId]) {
-                        categoryConfig[oldId] = {
-                            name: categoryName,
-                            title: categoryName.toUpperCase()
-                        };
-                        if (categoryIcon) {
-                            categoryConfig[oldId].icon = categoryIcon;
-                        } else {
-                            // Remove icon if it was cleared
-                            delete categoryConfig[oldId].icon;
-                        }
-                    }
-                    
-                    // Update Firebase
-                    const snapshot = await database.ref(`menu/${oldId}`).once('value');
-                    let categoryData = snapshot.val();
-                    if (categoryData) {
-                        categoryData.title = categoryName.toUpperCase();
-                        if (categoryIcon) {
-                            categoryData.icon = categoryIcon; // Store icon in Firebase
-                        } else {
-                            // Remove icon from Firebase if cleared
-                            delete categoryData.icon;
-                        }
-                        await database.ref(`menu/${oldId}`).set(categoryData);
-                        
-                        // Also update menuCategories in memory
-                        menuCategories[oldId] = categoryData;
-                        
-                        // If this is the currently selected category in admin, update the title
-                        if (currentAdminCategory === oldId) {
-                            document.getElementById('adminCategoryTitle').textContent = categoryName.toUpperCase();
-                        }
-                    }
-                    
-                    showSuccess('Category updated!');
+            if (categoryData) {
+                // Update title - KEEP ORIGINAL CASE (remove toUpperCase)
+                categoryData.title = categoryName;  // ← FIXED: removed .toUpperCase()
+                
+                // Update icon if provided
+                if (categoryIcon) {
+                    categoryData.icon = categoryIcon;
                 } else {
-                    // Create new category in Firebase (icon optional)
-                    const newCategory = {
-                        title: categoryName.toUpperCase(),
-                        items: []
-                    };
-                    
-                    // Only add icon if provided
+                    // Remove icon if cleared
+                    delete categoryData.icon;
+                }
+                
+                await database.ref(`menu/${oldId}`).set(categoryData);
+                
+                // Update in-memory cache
+                menuCategories[oldId] = categoryData;
+                
+                // Update categoryConfig if it exists
+                if (categoryConfig[oldId]) {
+                    categoryConfig[oldId].name = categoryName;
                     if (categoryIcon) {
-                        newCategory.icon = categoryIcon;
+                        categoryConfig[oldId].icon = categoryIcon;
+                    } else {
+                        delete categoryConfig[oldId].icon;
                     }
-                    
-                    await database.ref(`menu/${categoryId}`).set(newCategory);
-                    
-                    // Add to menuCategories in memory
-                    menuCategories[categoryId] = newCategory;
-                    
-                    console.log(`✅ Category created: ${categoryId}`);
-                    showSuccess('Category added!');
                 }
                 
-                // Increment version
-                await incrementMenuVersion();
-                
-                closeCategoryModal();
-                
-                // Re-render everything
-                renderCategoryPills();
-                renderAdminCategories(menuCategories);
-                
-                // If editing and it's the selected category, reload items
-                if (currentEditCategory && currentAdminCategory === currentEditCategory) {
-                    loadAdminItems(currentEditCategory);
+                // If this is the currently selected category in admin, update the title
+                if (currentAdminCategory === oldId) {
+                    document.getElementById('adminCategoryTitle').textContent = categoryName;  // ← FIXED: removed .toUpperCase()
                 }
-                
-            } catch (error) {
-                console.error('Error saving category:', error);
-                alert('Error saving category: ' + error.message);
             }
+            
+            showSuccess('Category updated!');
+        } else {
+            // Create new category in Firebase - KEEP ORIGINAL CASE
+            const newCategory = {
+                title: categoryName,  // ← FIXED: removed .toUpperCase()
+                items: []
+            };
+            
+            // Only add icon if provided
+            if (categoryIcon) {  // ← FIXED: changed Chinese parentheses to regular
+                newCategory.icon = categoryIcon;
+            }
+            
+            await database.ref(`menu/${categoryId}`).set(newCategory);
+            
+            // Add to menuCategories in memory
+            menuCategories[categoryId] = newCategory;
+            
+            console.log(`Category created: ${categoryId}`);
+            showSuccess('Category added!');
         }
+        
+        // Increment version
+        await incrementMenuVersion();
+        
+        closeCategoryModal();
+        
+        // Re-render everything
+        renderCategoryPills();
+        renderAdminCategories(menuCategories);
+        
+        // If editing and it's the selected category, reload items
+        if (currentEditCategory && currentAdminCategory === currentEditCategory) {
+            loadAdminItems(currentEditCategory);
+        }
+        
+    } catch (error) {
+        console.error('Error saving category:', error);
+        alert('Error saving category: ' + error.message);
+    }
+}
 
         async function deleteCategory(categoryId, event) {
             if (event) {
