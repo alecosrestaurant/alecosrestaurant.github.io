@@ -1849,16 +1849,23 @@
             'extra': { name: 'Extra', icon: '➕', title: 'RICE' }
         };
 
+        // Track which categories have been loaded
+        let loadedCategories = new Set();
+
         initializeFirebase();
 
         /**
          * 🔥 CRITICAL: Check version number ONLY (1KB download)
          * Compare with local cache version
-         * Only download full menu if version mismatch
+         * Only download category list (not items) if version mismatch
          */
         async function loadMenuOptimized() {
             try {
                 console.log('🔄 Checking menu version...');
+                
+                // Show loading initially
+                document.getElementById('menu-items-display').innerHTML = 
+                    '<div class="loading">Loading menu...</div>';
                 
                 // 1. Get local cache
                 const cachedMenu = localStorage.getItem(CACHE_CONFIG.MENU_KEY);
@@ -1870,7 +1877,7 @@
                 
                 console.log(`Local version: ${cachedVersion}, Firebase version: ${firebaseVersion}`);
                 
-                // 3. If versions match AND cache exists → use cache (0 bytes!)
+                // 3. If versions match AND cache exists → use cache
                 if (cachedMenu && cachedVersion && parseInt(cachedVersion) === firebaseVersion) {
                     console.log('✅ Using cached menu (0 MB downloaded!)');
                     menuCategories = JSON.parse(cachedMenu);
@@ -1878,7 +1885,6 @@
                     // Process custom category icons
                     Object.keys(menuCategories).forEach(categoryId => {
                         if (!categoryConfig[categoryId] && menuCategories[categoryId].icon) {
-                            // Store icon from Firebase for custom categories
                             categoryConfig[categoryId] = {
                                 name: menuCategories[categoryId].title || categoryId,
                                 icon: menuCategories[categoryId].icon
@@ -1887,25 +1893,24 @@
                     });
                     
                     renderCategoryPills();
-                    // Use first category from categoryConfig, not from menuCategories
-                    const firstCategoryFromConfig = Object.keys(categoryConfig).find(catId => menuCategories[catId]);
-                    if (firstCategoryFromConfig) {
-                        showCategory(firstCategoryFromConfig, true);
-                    } else {
-                        const firstCategory = Object.keys(menuCategories)[0];
-                        if (firstCategory) {
-                            showCategory(firstCategory, true);
-                        }
+                    
+                    // Load first category (Salads) immediately
+                    const firstCategory = Object.keys(categoryConfig).find(catId => menuCategories[catId]) || Object.keys(menuCategories)[0];
+                    if (firstCategory) {
+                        // Load from cache first (instant)
+                        displayCategoryItems(firstCategory, menuCategories[firstCategory]);
+                        // Then background load other categories
+                        loadRemainingCategoriesInBackground(firstCategory);
                     }
-                    return; // DONE! No Firebase download needed!
+                    return;
                 }
                 
-                // 4. Version mismatch → download full menu
-                console.log('⚠️ Version mismatch - downloading fresh menu...');
+                // 4. Version mismatch - download category list (without items to save bandwidth)
+                console.log('⚠️ Version mismatch - downloading category list...');
                 const snapshot = await database.ref('menu').once('value');
-                menuCategories = snapshot.val();
+                const fullMenu = snapshot.val();
 
-                if (!menuCategories) {
+                if (!fullMenu) {
                     menuCategories = {};
                     for (const [categoryId, config] of Object.entries(categoryConfig)) {
                         menuCategories[categoryId] = {
@@ -1913,12 +1918,13 @@
                             items: []
                         };
                     }
+                } else {
+                    menuCategories = fullMenu;
                 }
                 
                 // Process custom category icons
                 Object.keys(menuCategories).forEach(categoryId => {
                     if (!categoryConfig[categoryId] && menuCategories[categoryId].icon) {
-                        // Store icon from Firebase for custom categories
                         categoryConfig[categoryId] = {
                             name: menuCategories[categoryId].title || categoryId,
                             icon: menuCategories[categoryId].icon
@@ -1932,23 +1938,171 @@
                 
                 console.log('✅ Menu downloaded and cached');
                 
-                // 6. Render
+                // 6. Render categories
                 renderCategoryPills();
-                // Use first category from categoryConfig, not from menuCategories
-                const firstCategoryFromConfig = Object.keys(categoryConfig).find(catId => menuCategories[catId]);
-                if (firstCategoryFromConfig) {
-                    showCategory(firstCategoryFromConfig, true);
-                } else {
-                    const firstCategory = Object.keys(menuCategories)[0];
-                    if (firstCategory) {
-                        showCategory(firstCategory, true);
-                    }
+                
+                // Load first category (Salads) immediately
+                const firstCategory = Object.keys(categoryConfig).find(catId => menuCategories[catId]) || Object.keys(menuCategories)[0];
+                if (firstCategory) {
+                    displayCategoryItems(firstCategory, menuCategories[firstCategory]);
+                    // Then background load other categories
+                    loadRemainingCategoriesInBackground(firstCategory);
                 }
+                
             } catch (error) {
                 console.error('Error loading menu:', error);
                 document.getElementById('menu-items-display').innerHTML = 
                     '<div class="loading">Error loading menu. Please refresh.</div>';
             }
+        }
+
+        /**
+         * Load all remaining categories in background after first category is shown
+         */
+        async function loadRemainingCategoriesInBackground(firstCategoryId) {
+            // Mark first category as loaded
+            loadedCategories.add(firstCategoryId);
+            
+            // Get all category IDs
+            const allCategoryIds = Object.keys(menuCategories);
+            
+            // Load each remaining category in background
+            for (const categoryId of allCategoryIds) {
+                if (categoryId !== firstCategoryId && !loadedCategories.has(categoryId)) {
+                    // Small delay to not overwhelm the browser
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    
+                    // Check if we already have items in cache
+                    if (menuCategories[categoryId] && menuCategories[categoryId].items && menuCategories[categoryId].items.length > 0) {
+                        // Already have items from initial load
+                        loadedCategories.add(categoryId);
+                        console.log(`✅ Category ${categoryId} already has ${menuCategories[categoryId].items.length} items in cache`);
+                    } else {
+                        // Need to download this category
+                        console.log(`📥 Background loading category: ${categoryId}`);
+                        try {
+                            const snapshot = await database.ref(`menu/${categoryId}`).once('value');
+                            const categoryData = snapshot.val();
+                            
+                            if (categoryData) {
+                                menuCategories[categoryId] = categoryData;
+                                loadedCategories.add(categoryId);
+                                
+                                // Update cache
+                                localStorage.setItem(CACHE_CONFIG.MENU_KEY, JSON.stringify(menuCategories));
+                                console.log(`✅ Background loaded category: ${categoryId} (${categoryData.items?.length || 0} items)`);
+                            }
+                        } catch (error) {
+                            console.error(`Error background loading category ${categoryId}:`, error);
+                        }
+                    }
+                }
+            }
+            
+            console.log('🎉 All categories loaded in background');
+        }
+
+        /**
+         * Load items for a specific category (when user clicks)
+         */
+        async function loadCategoryItems(categoryId) {
+            // If already loaded, just display
+            if (loadedCategories.has(categoryId) && menuCategories[categoryId] && menuCategories[categoryId].items) {
+                displayCategoryItems(categoryId, menuCategories[categoryId]);
+                return;
+            }
+            
+            // Show loading for this category
+            document.getElementById('menu-items-display').innerHTML = 
+                '<div class="loading">Loading items...</div>';
+            
+            try {
+                // Check cache first
+                const cachedMenu = localStorage.getItem(CACHE_CONFIG.MENU_KEY);
+                if (cachedMenu) {
+                    const menuData = JSON.parse(cachedMenu);
+                    if (menuData[categoryId] && menuData[categoryId].items) {
+                        menuCategories[categoryId] = menuData[categoryId];
+                        loadedCategories.add(categoryId);
+                        displayCategoryItems(categoryId, menuData[categoryId]);
+                        return;
+                    }
+                }
+                
+                // If not in cache, download from Firebase
+                const snapshot = await database.ref(`menu/${categoryId}`).once('value');
+                const categoryData = snapshot.val();
+                
+                if (categoryData) {
+                    menuCategories[categoryId] = categoryData;
+                    loadedCategories.add(categoryId);
+                    
+                    // Update cache
+                    localStorage.setItem(CACHE_CONFIG.MENU_KEY, JSON.stringify(menuCategories));
+                    
+                    displayCategoryItems(categoryId, categoryData);
+                } else {
+                    document.getElementById('menu-items-display').innerHTML = 
+                        '<div class="empty-state">No items in this category</div>';
+                }
+            } catch (error) {
+                console.error('Error loading category items:', error);
+                document.getElementById('menu-items-display').innerHTML = 
+                    '<div class="empty-state">Error loading items</div>';
+            }
+        }
+
+        /**
+         * Display items for a category
+         */
+        function displayCategoryItems(categoryId, categoryData) {
+            const config = categoryConfig[categoryId] || { name: categoryId };
+            
+            let itemsHTML = `
+                <div class="menu-category-section">
+                    <div class="category-header">
+                        <h2 class="category-title">${categoryData.title || config.title || config.name}</h2>
+                        <div class="category-line"></div>
+                    </div>
+                    <div class="menu-items">
+            `;
+            
+            if (categoryData.items && categoryData.items.length > 0) {
+                categoryData.items.forEach(item => {
+                    const escapedName = item.name ? item.name.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Item';
+                    const itemPrice = item.price || 0;
+                    
+                    const hasImage = item.image && item.image.trim() !== '';
+                    const imageHtml = hasImage ? `<img src="${item.image}" alt="${item.name}" class="menu-item-image">` : '';
+                    const noImageClass = hasImage ? '' : 'no-image';
+                    
+                    itemsHTML += `
+                        <div class="menu-item ${noImageClass}">
+                            ${imageHtml}
+                            <div class="item-content">
+                                <div class="item-name">${item.name}</div>
+                                ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
+                                <div class="item-footer">
+                                    <div class="item-price">$${itemPrice.toFixed(2)}</div>
+                                    <button class="add-to-bag-btn" onclick="addToCart('${escapedName}', ${itemPrice})">
+                                        Add to Bag
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                itemsHTML += `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-light);">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🍽️</div>
+                        <p>No items in this category yet</p>
+                    </div>
+                `;
+            }
+            
+            itemsHTML += '</div></div>';
+            document.getElementById('menu-items-display').innerHTML = itemsHTML;
         }
 
         /**
@@ -1966,6 +2120,9 @@
                 // Clear local cache
                 localStorage.removeItem(CACHE_CONFIG.MENU_KEY);
                 localStorage.removeItem(CACHE_CONFIG.VERSION_KEY);
+                
+                // Reset loaded categories
+                loadedCategories.clear();
             } catch (error) {
                 console.error('Error incrementing version:', error);
             }
@@ -1984,14 +2141,13 @@
                 } else {
                     console.log('✅ Menu already loaded');
                     renderCategoryPills();
-                    // Use first category from categoryConfig when returning to menu
-                    const firstCategoryFromConfig = Object.keys(categoryConfig).find(catId => menuCategories[catId]);
-                    if (firstCategoryFromConfig) {
-                        showCategory(firstCategoryFromConfig, true);
-                    } else {
-                        const firstCategory = Object.keys(menuCategories)[0];
-                        if (firstCategory) {
-                            showCategory(firstCategory, true);
+                    // Show current category or first one
+                    const firstCategory = Object.keys(categoryConfig).find(catId => menuCategories[catId]) || Object.keys(menuCategories)[0];
+                    if (firstCategory) {
+                        if (loadedCategories.has(firstCategory)) {
+                            displayCategoryItems(firstCategory, menuCategories[firstCategory]);
+                        } else {
+                            loadCategoryItems(firstCategory);
                         }
                     }
                 }
@@ -2049,61 +2205,8 @@
                 event.target.classList.add('active');
             }
             
-            const categoryData = menuCategories[categoryId];
-            if (!categoryData) {
-                document.getElementById('menu-items-display').innerHTML = 
-                    '<div class="loading">No items in this category</div>';
-                return;
-            }
-
-            const config = categoryConfig[categoryId] || { name: categoryId };
-            
-            let itemsHTML = `
-                <div class="menu-category-section">
-                    <div class="category-header">
-                        <h2 class="category-title">${categoryData.title || config.title || config.name}</h2>
-                        <div class="category-line"></div>
-                    </div>
-                    <div class="menu-items">
-            `;
-            
-            if (categoryData.items && categoryData.items.length > 0) {
-                categoryData.items.forEach(item => {
-                    const escapedName = item.name ? item.name.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'Item';
-                    const itemPrice = item.price || 0;
-                    
-                    // Check if item has an image
-                    const hasImage = item.image && item.image.trim() !== '';
-                    const imageHtml = hasImage ? `<img src="${item.image}" alt="${item.name || 'Item'}" class="menu-item-image">` : '';
-                    const noImageClass = hasImage ? '' : 'no-image';
-                    
-                    itemsHTML += `
-                        <div class="menu-item ${noImageClass}">
-                            ${imageHtml}
-                            <div class="item-content">
-                                <div class="item-name">${item.name || 'Item'}</div>
-                                ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
-                                <div class="item-footer">
-                                    <div class="item-price">$${itemPrice.toFixed(2)}</div>
-                                    <button class="add-to-bag-btn" onclick="addToCart('${escapedName}', ${itemPrice})">
-                                        Add to Bag
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-            } else {
-                itemsHTML += `
-                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-light);">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🍽️</div>
-                        <p>No items in this category yet</p>
-                    </div>
-                `;
-            }
-            
-            itemsHTML += '</div></div>';
-            document.getElementById('menu-items-display').innerHTML = itemsHTML;
+            // Load items for this category
+            loadCategoryItems(categoryId);
         }
 
         function addToCart(itemName, itemPrice) {
@@ -2676,8 +2779,8 @@ function renderAdminCategories(menuData) {
             let categoryData = snapshot.val();
             
             if (categoryData) {
-                // Update title - KEEP ORIGINAL CASE (remove toUpperCase)
-                categoryData.title = categoryName;  // ← FIXED: removed .toUpperCase()
+                // Update title - KEEP ORIGINAL CASE
+                categoryData.title = categoryName;
                 
                 // Update icon if provided
                 if (categoryIcon) {
@@ -2704,7 +2807,7 @@ function renderAdminCategories(menuData) {
                 
                 // If this is the currently selected category in admin, update the title
                 if (currentAdminCategory === oldId) {
-                    document.getElementById('adminCategoryTitle').textContent = categoryName;  // ← FIXED: removed .toUpperCase()
+                    document.getElementById('adminCategoryTitle').textContent = categoryName;
                 }
             }
             
@@ -2712,12 +2815,12 @@ function renderAdminCategories(menuData) {
         } else {
             // Create new category in Firebase - KEEP ORIGINAL CASE
             const newCategory = {
-                title: categoryName,  // ← FIXED: removed .toUpperCase()
+                title: categoryName,
                 items: []
             };
             
             // Only add icon if provided
-            if (categoryIcon) {  // ← FIXED: changed Chinese parentheses to regular
+            if (categoryIcon) {
                 newCategory.icon = categoryIcon;
             }
             
